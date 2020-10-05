@@ -15,7 +15,7 @@ export default function BasicSearch(props) {
           color: 'white',
         },
       },
-      MuiTypography:{
+      MuiTypography:{   
         root: {
           // Some CSS
           color: 'white',
