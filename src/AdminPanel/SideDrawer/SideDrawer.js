@@ -63,7 +63,7 @@ export default function ClippedDrawer(props) {
         {/* <Toolbar /> */}
         <div className={classes.drawerContainer}>
           <List>
-            {['Customer', 'Truck'].map((text, index) => (
+            {['Customer', 'Supplier','Truck'].map((text, index) => (
               <ListItem button key={text} style={{background: props.drawerPage===text ? 'rgb(56,56,56)':''}} onClick={()=>{props.setDrawerPage(text)}}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} style={{color:'white'}}  />

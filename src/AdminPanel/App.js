@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
  
-export default function CenteredGrid() {
+export default function App(props) {
 	const classes = useStyles();
 	const [drawerPage, setDrawerPage]=React.useState("Customer")
 	return (
@@ -33,7 +33,7 @@ export default function CenteredGrid() {
 							<SideDrawer setDrawerPage={setDrawerPage} drawerPage={drawerPage} />
 						</Grid>
 						<Grid item xs={9} style={{marginLeft: '70px',marginTop: '10px',marginBottom:'10px'}}>
-							<HomePage drawerPage={drawerPage}/>	
+							<HomePage drawerPage={drawerPage} {...props}/>	
 						</Grid>
 					</Grid>
 					
