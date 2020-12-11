@@ -4,8 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import { AiOutlineMenu } from 'react-icons/ai';
+import { withRouter } from 'next/router'
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -18,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+ function AppBars(props) {
   const classes = useStyles();
 
   return (
@@ -28,9 +27,10 @@ export default function ButtonAppBar() {
           <Typography variant="h6" className={classes.title}>
             TYFT Admin Panel
           </Typography>
-          <Button color="inherit">Logout</Button>
+          <Button onClick={()=>props.router.push('/login')} color="inherit">Logout</Button>
         </Toolbar>
       </AppBar>
     </div>
   );
 }
+export default withRouter(AppBars);
