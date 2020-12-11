@@ -52,7 +52,7 @@ function HomePage(props) {
       }
       else{
 			axios
-				.get('https://tyft-backend.herokuapp.com/api/users/getUser')
+				.get('https://tyft-backend.herokuapp.com/api/users/getallusers')
 				.then(async (Response) => {
 					let Data = Response.data;
 					let isCust = false;
