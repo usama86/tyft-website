@@ -6,7 +6,6 @@ import Popup from './Ui/Popup';
 // import Button from '@material-ui/core/Button';
 import Skeleton from '@material-ui/lab/Skeleton';
 import { withRouter } from 'next/router'
-
 function HomePage(props) {
 	const theme = createMuiTheme({
 		overrides: {
@@ -15,13 +14,13 @@ function HomePage(props) {
 				// Name of the rule
 				root: {
 					// Some CSS
-					color: 'white'
+					// color: 'white'
 				}
 			},
 			MuiTypography: {
 				root: {
 					// Some CSS
-					color: 'white'
+					// color: 'white'
 				}
 			}
 		}
@@ -125,7 +124,10 @@ function HomePage(props) {
 
 	//profileName
 	//truckName
-	props.router.push('/profile/' + props.drawerPage)
+	props.router.push({
+		pathname: '/profile/' + props.drawerPage,
+		query: columns,
+	})
   }
 	return (
     <React.Fragment>
@@ -139,7 +141,7 @@ function HomePage(props) {
 		<React.Fragment>
 			<MaterialTable
 				title={props.drawerPage}
-				style={{ height: '100%', background: '#202020', color: 'white' }}
+				style={{ height: '100%', color: 'black' }}
 				columns={getColumn()}
         data={data}
         // actions={[
@@ -161,12 +163,12 @@ function HomePage(props) {
 				options={{
 					search: true,
 					pageSizeOptions: [ 5 ],
-					searchFieldStyle: { color: 'white' },
+					// searchFieldStyle: { color: 'white' },
 					rowStyle: (x) => {
             return {
 							cursor: 'pointer',
 							'&:hover': {
-								background: 'red'
+								// background: 'red'
 							}
 						};
 					}

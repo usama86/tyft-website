@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{background:'#202020'}}>
+      <AppBar position="static" style={{background:'#243238'}}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             TYFT Admin Panel

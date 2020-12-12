@@ -2,7 +2,12 @@ import React from 'react';
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import App from './../src/AdminPanel/App';
-export default function Home(props) {
+import { withRouter } from 'next/router'
+function Home(props) {
+  React.useEffect(()=>{
+    props.router.query={};
+    console.log(props.router)
+  },[])
   return (
     <div className={styles.container}>
       <Head>
@@ -17,3 +22,4 @@ export default function Home(props) {
     </div>
   )
 }
+export default withRouter(Home);

@@ -12,12 +12,13 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-
+import { withRouter } from 'next/router'
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    height:'100%'
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -28,8 +29,8 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    marginTop: '64px',
-    background:'#202020'
+    position:'relative',
+    background:'#30373E'
   },
   drawerContainer: {
     overflow: 'auto',
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ClippedDrawer(props) {
+function Drawers(props) {
   const classes = useStyles();
 
   return (
@@ -62,17 +63,27 @@ export default function ClippedDrawer(props) {
       >
         {/* <Toolbar /> */}
         <div className={classes.drawerContainer}>
-          <List>
-            {['Customer', 'Supplier','Truck'].map((text, index) => (
+        {Object.keys(props.userData).length === 0 ? <List>
+           {['Customer', 'Supplier','Truck'].map((text, index) => (
               <ListItem button key={text} style={{background: props.drawerPage===text ? 'rgb(56,56,56)':''}} onClick={()=>{props.setDrawerPage(text)}}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} style={{color:'white'}}  />
               </ListItem>
             ))}
-          </List>
+            
+          </List>:<List>
+           {['Profile'].map((text, index) => (
+              <ListItem button key={text} style={{background: props.drawerPage===text ? 'rgb(56,56,56)':''}}>
+                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+                <ListItemText primary={text} style={{color:'white'}}  />
+              </ListItem>
+            ))}
+            
+          </List>}
           <Divider />
         </div>
       </Drawer>
     </div>
   );
 }
+export default withRouter(Drawers);

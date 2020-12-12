@@ -4,8 +4,11 @@ import Head from 'next/head';
 import Button from '@material-ui/core/Button';
 import { withRouter } from 'next/router';
 import axios from 'axios';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 // import url from './../Constants/constants';
 const Login = (props) => {
+	const [ loader, setLoader ] = React.useState(false);
 	const [ email, setEmail ] = React.useState({
 		value: '',
 		touch: false,
@@ -17,9 +20,11 @@ const Login = (props) => {
 		touch: false,
 		error: false
 	});
+	const [ errormsg, setErrorMsg ] = React.useState(false);
 
 	const onSubmit = (event) => {
 		event.preventDefault();
+		setLoader(true);
 		let credentials = {
 			email: email.value,
 			password: password.value
@@ -31,6 +36,7 @@ const Login = (props) => {
 				console.log(responseMessage);
 				if (responseMessage === 'Auth Successful') props.router.push('/home');
 				else {
+					setLoader(false);
 					setEmail({
 						value: '',
 						touch: false,
@@ -41,10 +47,13 @@ const Login = (props) => {
 						touch: false,
 						error: true
 					});
+					setErrorMsg(true);
 				}
+				setLoader(false);
 			})
 			.catch((error) => {
 				console.log(error);
+				setLoader(false);
 			});
 	};
 
@@ -95,12 +104,14 @@ const Login = (props) => {
 										type="email"
 										name="email"
 										value={email.value}
-										onChange={(event) =>
+										onChange={(event) => {
 											setEmail({
 												value: event.target.value,
 												touch: true,
 												error: email.value ? false : true
-											})}
+											});
+											if (errormsg) setErrorMsg(false);
+										}}
 									/>
 								</div>
 								<div className="input-group form-group">
@@ -121,9 +132,28 @@ const Login = (props) => {
 											})}
 									/>
 								</div>
+								{errormsg ? (
+									<span
+										style={{
+											color: 'red',
+											fontSize: '13px'
+										}}
+									>
+										Incorrect Email or Password
+									</span>
+								) : null}
 								<div className="form-group" style={{ textAlign: 'end' }}>
-									<Button variant="outlined" color="#495057" onClick={onSubmit}>
-										Login
+									<Button
+										variant="outlined"
+										style={{ width: '100px', height: '35px' }}
+										color="#495057"
+										onClick={onSubmit}
+									>
+										{loader ? (
+											<CircularProgress style={{ height: '20px', width: '20px' }} />
+										) : (
+											<span>Login</span>
+										)}
 									</Button>
 								</div>
 							</form>

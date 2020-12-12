@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head'
 import styles from './../../styles/Home.module.css'
 import App from '../../src/AdminPanel/App';
-export default function Profile() {
+export default function Profile(props) {
   return (
     <div className={styles.container}>
       <Head>
