@@ -12,79 +12,112 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import { withRouter } from 'next/router'
+import { withRouter } from 'next/router';
+import { FiUsers } from 'react-icons/fi';
+import { GiFoodTruck } from 'react-icons/gi';
+import { ImUserTie } from 'react-icons/im';
+
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-   
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-    height:'100%'
-  },
-  drawerPaper: {
-    width: drawerWidth,
-    position:'relative',
-    background:'#30373E'
-  },
-  drawerContainer: {
-    overflow: 'auto',
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-  },
+	root: {
+		display: 'flex'
+	},
+	appBar: {
+		zIndex: theme.zIndex.drawer + 1
+	},
+	drawer: {
+		width: drawerWidth,
+		flexShrink: 0,
+		height: '100%'
+	},
+	drawerPaper: {
+		width: drawerWidth,
+		position: 'relative',
+		background: '#30373E'
+	},
+	drawerContainer: {
+		overflow: 'auto'
+	},
+	content: {
+		flexGrow: 1,
+		padding: theme.spacing(3)
+	}
 }));
 
 function Drawers(props) {
-  const classes = useStyles();
+	const classes = useStyles();
 
-  return (
-    <React.Fragment>
-      <CssBaseline />
-      {/* <AppBar position="fixed" className={classes.appBar}>
+	return (
+		<React.Fragment>
+			<CssBaseline />
+			{/* <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6" noWrap>
             Clipped drawer
           </Typography>
         </Toolbar>
       </AppBar> */}
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        {/* <Toolbar /> */}
-        {/* <div className={classes.drawerContainer}> */}
-        {Object.keys(props.userData).length === 0 ? <List>
-           {['Customer', 'Supplier','Truck'].map((text, index) => (
-              <ListItem button key={text} style={{background: props.drawerPage===text ? 'rgb(56,56,56)':''}} onClick={()=>{props.setDrawerPage(text)}}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} style={{color:'white'}}  />
-              </ListItem>
-            ))}
-            
-          </List>:<List>
-           {['Profile'].map((text, index) => (
-              <ListItem button key={text} style={{background: props.drawerPage===text ? 'rgb(56,56,56)':''}}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                <ListItemText primary={text} style={{color:'white'}}  />
-              </ListItem>
-            ))}
-            
-          </List>}
-          <Divider />
-        {/* </div> */}
-      </Drawer>
-    </React.Fragment>
-  );
+			<Drawer
+				className={classes.drawer}
+				variant="permanent"
+				classes={{
+					paper: classes.drawerPaper
+				}}
+			>
+				{/* <Toolbar /> */}
+				{/* <div className={classes.drawerContainer}> */}
+				{/* ,'Setting' */}
+				{Object.keys(props.userData).length === 0 ? (
+					<List>
+						{[ 'Customer', 'Supplier', 'Truck' ].map((text, index) => (
+							<ListItem
+								button
+								key={text}
+								style={{ background: props.drawerPage === text ? 'rgb(56,56,56)' : '' }}
+								onClick={() => {
+									props.setDrawerPage(text);
+								}}
+							>
+								<ListItemIcon>
+									{index === 0 ? (
+										<FiUsers color="white" size={23} />
+									) : index === 1 ? (
+										<ImUserTie color="white" size={23} />
+									) : index === 2 ? (
+										<GiFoodTruck color="white" size={23} />
+									) : null}
+								</ListItemIcon>
+								<ListItemText primary={text} style={{ color: 'white' }} />
+							</ListItem>
+						))}
+					</List>
+				) : (
+					<List>
+						{[ 'Profile' ].map((text, index) => (
+							<ListItem
+								button
+								key={text}
+								style={{ background: props.drawerPage === text ? 'rgb(56,56,56)' : '' }}
+							>
+								<ListItemIcon>
+									{index === 0 ? (
+										<FiUsers color="white" size={23} />
+									) : index === 1 ? (
+										<ImUserTie color="white" size={23} />
+									) : index === 2 ? (
+										<GiFoodTruck color="white" size={23} />
+									) : null}
+								</ListItemIcon>
+								<ListItemText primary={text} style={{ color: 'white' }} />
+							</ListItem>
+						))}
+					</List>
+				)}
+				<Divider />
+				{/* </div> */}
+			</Drawer>
+		</React.Fragment>
+	);
 }
 export default withRouter(Drawers);

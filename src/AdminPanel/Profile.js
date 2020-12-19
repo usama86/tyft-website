@@ -46,15 +46,22 @@ export default function Profile({ userData }) {
 		truckWebsite: null
 	});
 	const [ isLoading, SetIsLoading ] = React.useState(false);
+	const [ reset, isReset ] = React.useState(false);
 	React.useEffect(() => {
 		updateVal();
 	}, []);
 
-	const onChangeUserData = () => {};
+	const onChangeUserData = (e, val) => {
+		if (val === 'facebook' || val === 'twitter' || val === 'instagram')
+			updateUser.socialMedia[val] = e.target.value;
+		else updateUser[val] = e.target.value;
+		SetUpdateUser(updateUser);
+		isReset(!reset);
+	};
 
 	const updateVal = async () => {
 		SetIsLoading(false);
-		console.log(updateUser);
+
 		updateUser.email = await userData.email;
 		updateUser.Language = await userData.Language;
 		updateUser.isAdmin = await userData.isAdmin;
@@ -71,9 +78,8 @@ export default function Profile({ userData }) {
 		updateUser.longitude = await userData.longitude; // miss
 		updateUser.schedule = await userData.schedule; //3
 		updateUser.selectedServingCusines = await userData.selectedServingCusines; //4
-		userData.socialMedia ? (updateUser.socialMedia.facebook = await userData.socialMedia.facebook) : null;
-		userData.socialMedia ? (updateUser.socialMedia.instagram = await userData.socialMedia.instagram) : null;
-		userData.socialMedia ? (updateUser.socialMedia.twitter = await userData.socialMedia.twitter) : null;
+		if (userData.socialMedia && userData.socialMedia !== 'undefined')
+			updateUser.socialMedia = await JSON.parse(userData.socialMedia);
 		updateUser.status = await userData.status;
 		updateUser.truckCity = await userData.truckCity;
 		updateUser.truckContact = await userData.truckContact;
@@ -99,7 +105,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'email'),
 								required: true,
 								id: 'row-heights',
 								value: updateUser.email
@@ -115,7 +121,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'Language'),
 								required: true,
 								id: 'row-heights1',
 								value: updateUser.Language
@@ -131,7 +137,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'isAdmin'),
 								required: true,
 								id: 'row-heights2',
 								value: updateUser.isAdmin
@@ -147,7 +153,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'phoneNumber'),
 								required: true,
 								id: 'row-heights3',
 								value: updateUser.phoneNumber
@@ -163,7 +169,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'profileName'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.profileName
@@ -179,7 +185,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'userType'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.userType
@@ -195,10 +201,11 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'TruckID'),
 								required: true,
 								id: 'row-heights4',
-								value: updateUser.TruckID
+								value: updateUser.TruckID,
+								disabled: true
 							}
 						}
 					: { showNothing: true },
@@ -211,10 +218,11 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'MenuID'),
 								required: true,
 								id: 'row-heights4',
-								value: updateUser.MenuID
+								value: updateUser.MenuID,
+								disabled: true
 							}
 						}
 					: { showNothing: true },
@@ -227,14 +235,14 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'businessDesc'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.businessDesc
 							}
 						}
 					: { showNothing: true },
-				userData.socialMedia && userData.socialMedia.facebook
+				userData.socialMedia && userData.socialMedia!=='undefined'
 					? {
 							label: 'Facebook:',
 							xsLabel: 1,
@@ -243,14 +251,14 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'facebook'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.socialMedia.facebook
 							}
 						}
 					: { showNothing: true },
-				userData.socialMedia && userData.socialMedia.instagram
+				userData.socialMedia && userData.socialMedia!=='undefined'
 					? {
 							label: 'Instagram:',
 							xsLabel: 1,
@@ -259,14 +267,14 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'instagram'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.socialMedia.instagram
 							}
 						}
 					: { showNothing: true },
-				userData.socialMedia && userData.socialMedia.twitter
+				userData.socialMedia && userData.socialMedia!=='undefined'
 					? {
 							label: 'Twitter:',
 							xsLabel: 1,
@@ -275,7 +283,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'twitter'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.socialMedia.twitter
@@ -291,7 +299,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'status'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.status
@@ -307,7 +315,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'truckCity'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.truckCity
@@ -323,7 +331,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'truckContact'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.truckContact
@@ -339,7 +347,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'truckEmail'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.truckEmail
@@ -355,7 +363,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'truckName'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.truckName
@@ -371,7 +379,7 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: onChangeUserData,
+								onChange: (e) => onChangeUserData(e, 'truckWebsite'),
 								required: true,
 								id: 'row-heights4',
 								value: updateUser.truckWebsite
