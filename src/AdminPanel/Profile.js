@@ -1,9 +1,9 @@
 import React from 'react';
 import TextField from './Ui/TextField';
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
 import Grid from './Ui/Grid';
 import Label from './Ui/Label';
+import CircularProgress from '@material-ui/core/CircularProgress';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile({ userData }) {
 	const classes = useStyles();
-	console.log(userData);
 	const [ updateUser, SetUpdateUser ] = React.useState({
 		email: null,
 		Language: null,
@@ -46,7 +45,7 @@ export default function Profile({ userData }) {
 		truckName: null,
 		truckWebsite: null
 	});
-
+	const [ isLoading, SetIsLoading ] = React.useState(false);
 	React.useEffect(() => {
 		updateVal();
 	}, []);
@@ -54,294 +53,379 @@ export default function Profile({ userData }) {
 	const onChangeUserData = () => {};
 
 	const updateVal = async () => {
+		SetIsLoading(false);
+		console.log(updateUser);
 		updateUser.email = await userData.email;
 		updateUser.Language = await userData.Language;
 		updateUser.isAdmin = await userData.isAdmin;
 		updateUser.phoneNumber = await userData.phoneNumber;
-		updateUser.profileName = userData.profileName;
-		updateUser.userType = userData.userType;
-		updateUser.TruckID = userData.TruckID;
-		updateUser.MenuID = userData.MenuID;
-		updateUser.businessDesc = userData.businessDesc;
-		updateUser.categoryArray = userData.categoryArray;
-		updateUser.coverPhoto = userData.coverPhoto;
-		updateUser.customerReview = userData.customerReview;
-		updateUser.latitude = userData.latitude;
-		updateUser.longitude = userData.longitude;
-		updateUser.schedule = userData.schedule;
-		updateUser.selectedServingCusines = userData.selectedServingCusines;
-		userData.socialMedia ? (updateUser.socialMedia.facebook = userData.socialMedia.facebook) : null;
-		userData.socialMedia ? (updateUser.socialMedia.instagram = userData.socialMedia.instagram) : null;
-		userData.socialMedia ? (updateUser.socialMedia.twitter = userData.socialMedia.twitter) : null;
-		updateUser.status = userData.status;
-		updateUser.truckCity = userData.truckCity;
-		updateUser.truckContact = userData.truckContact;
-		updateUser.truckEmail = userData.truckEmail;
-		updateUser.truckLogo = userData.truckLogo;
-		updateUser.truckName = userData.truckName;
-		updateUser.truckWebsite = userData.truckWebsite;
+		updateUser.profileName = await userData.profileName;
+		updateUser.userType = await userData.userType;
+		updateUser.TruckID = await userData.TruckID;
+		updateUser.MenuID = await userData.MenuID;
+		updateUser.businessDesc = await userData.businessDesc;
+		updateUser.categoryArray = await userData.categoryArray; //1Business Description
+		updateUser.coverPhoto = await userData.coverPhoto;
+		updateUser.customerReview = await userData.customerReview; //2
+		updateUser.latitude = await userData.latitude; //miss, need to show radius
+		updateUser.longitude = await userData.longitude; // miss
+		updateUser.schedule = await userData.schedule; //3
+		updateUser.selectedServingCusines = await userData.selectedServingCusines; //4
+		userData.socialMedia ? (updateUser.socialMedia.facebook = await userData.socialMedia.facebook) : null;
+		userData.socialMedia ? (updateUser.socialMedia.instagram = await userData.socialMedia.instagram) : null;
+		userData.socialMedia ? (updateUser.socialMedia.twitter = await userData.socialMedia.twitter) : null;
+		updateUser.status = await userData.status;
+		updateUser.truckCity = await userData.truckCity;
+		updateUser.truckContact = await userData.truckContact;
+		updateUser.truckEmail = await userData.truckEmail;
+		updateUser.truckLogo = await userData.truckLogo;
+		updateUser.truckName = await userData.truckName;
+		updateUser.truckWebsite = await userData.truckWebsite;
 		SetUpdateUser(updateUser);
+		console.log(updateUser);
+		SetIsLoading(true);
 	};
 
 	let expData = [
 		{
 			heading: 'Rows',
 			controls: [
-				{
-					label: 'Email:',
-					xsLabel: 12,
-					xsSize: 12,
-					component: TextField,
-					props: {
-						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
-						onChange: onChangeUserData,
-						required: true,
-						id: 'row-heights',
-						value: updateUser.email
-					}
-				},
-				{
-					label: 'Email:',
-					xsLabel: 4,
-					xsSize: 4,
-					component: TextField,
-					props: {
-						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
-						onChange: onChangeUserData,
-						required: true,
-						id: 'row-heights',
-						value: updateUser.email
-					}
-				},
-				{
-					label: 'Email:',
-					xsLabel: 4,
-					xsSize: 4,
-					component: TextField,
-					props: {
-						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
-						onChange: onChangeUserData,
-						required: true,
-						id: 'row-heights',
-						value: updateUser.email
-					}
-				},
-				{
-					label: 'Email:',
-					xsLabel: 4,
-					xsSize: 4,
-					component: TextField,
-					props: {
-						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
-						onChange: onChangeUserData,
-						required: true,
-						id: 'row-heights',
-						value: updateUser.email
-					}
-				},
-				{
-					label: 'Email:',
-					xsLabel: 4,
-					xsSize: 4,
-					component: TextField,
-					props: {
-						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
-						onChange: onChangeUserData,
-						required: true,
-						id: 'row-heights',
-						value: updateUser.email
-					}
-				}
+				userData.email
+					? {
+							label: 'Email:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights',
+								value: updateUser.email
+							}
+						}
+					: { showNothing: true },
+				userData.Language
+					? {
+							label: 'Language:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights1',
+								value: updateUser.Language
+							}
+						}
+					: { showNothing: true },
+				userData.isAdmin
+					? {
+							label: 'is Admin:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights2',
+								value: updateUser.isAdmin
+							}
+						}
+					: { showNothing: true },
+				userData.phoneNumber
+					? {
+							label: 'phone Number:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights3',
+								value: updateUser.phoneNumber
+							}
+						}
+					: { showNothing: true },
+				userData.profileName
+					? {
+							label: 'Profile Name:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.profileName
+							}
+						}
+					: { showNothing: true },
+				userData.userType
+					? {
+							label: 'User Type:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.userType
+							}
+						}
+					: { showNothing: true },
+				userData.TruckID
+					? {
+							label: 'Truck ID:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.TruckID
+							}
+						}
+					: { showNothing: true },
+				userData.MenuID
+					? {
+							label: 'Menu ID:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.MenuID
+							}
+						}
+					: { showNothing: true },
+				userData.businessDesc
+					? {
+							label: 'Business Description:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.businessDesc
+							}
+						}
+					: { showNothing: true },
+				userData.socialMedia && userData.socialMedia.facebook
+					? {
+							label: 'Facebook:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.socialMedia.facebook
+							}
+						}
+					: { showNothing: true },
+				userData.socialMedia && userData.socialMedia.instagram
+					? {
+							label: 'Instagram:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.socialMedia.instagram
+							}
+						}
+					: { showNothing: true },
+				userData.socialMedia && userData.socialMedia.twitter
+					? {
+							label: 'Twitter:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.socialMedia.twitter
+							}
+						}
+					: { showNothing: true },
+				userData.status
+					? {
+							label: 'Status:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.status
+							}
+						}
+					: { showNothing: true },
+				userData.truckCity
+					? {
+							label: 'Truck City:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.truckCity
+							}
+						}
+					: { showNothing: true },
+				userData.truckContact
+					? {
+							label: 'Truck Contact:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.truckContact
+							}
+						}
+					: { showNothing: true },
+				userData.truckEmail
+					? {
+							label: 'Truck Email:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.truckEmail
+							}
+						}
+					: { showNothing: true },
+				userData.truckName
+					? {
+							label: 'Truck Name:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.truckName
+							}
+						}
+					: { showNothing: true },
+				userData.truckWebsite
+					? {
+							label: 'Truck Website:',
+							xsLabel: 1,
+							xsSize: 3,
+							component: TextField,
+							props: {
+								className: classes.inputclass,
+								data: [ 'Auto', 'Exact', 'Atleast' ],
+								onChange: onChangeUserData,
+								required: true,
+								id: 'row-heights4',
+								value: updateUser.truckWebsite
+							}
+						}
+					: { showNothing: true }
 			]
 		}
 	];
-	// 		{
-	// 		  xsSize: 4,
-	// 		  component: TextField,
-	// 		  props: {
-	// 			id: 'name',
-	// 			onChange: onChangeRowHeightsVal,
-	// 			className: classes.textControl,
-	// 			value:
-	// 			  object[TDFConstants.TABLE.HEIGHT_TYPE] === 'Auto' ||
-	// 			  object[TDFConstants.TABLE.HEIGHT_TYPE] === 'auto'
-	// 				? Number(object[TDFConstants.TABLE.EXACT_HEIGHT]) + ' pt' //TG-40792
-	// 				: Number(object[TDFConstants.TABLE.HEIGHT]) + ' pt',
-	// 			disabled: getRowHeightValue() === 'Auto' ? true : false,
-	// 			toleranceLevel: 2,
-	// 			showUnit: true,
-	// 			useConverter: true,
-	// 			precision: 2,
-	// 			unit: getObject(props, ['document', 'ScaleUnit'], 'pt'),
-	// 		  },
-	// 		},
-	// 		{
-	// 		  component: TextField,
-	// 		  xsSize: 8,
-	// 		  type: 'text',
-	// 		  props: {
-	// 			children: 'Group Rows by Rows Count',
-	// 			checked: object.RowCount || object.RowCount === 0 ? true : false,
-	// 			onChange: onChangeRowsCountCheck,
-	// 			required: true,
-	// 			id: 'group-rows-by-rows-count',
-	// 		  },
-	// 		  justifyLabel: 'flex-start',
-	// 		  justifyComponent: 'left',
-	// 		},
-	// 		{
-	// 		  xsSize: 4,
-	// 		  component: TextField,
-	// 		  props: {
-	// 			type: 'number',
-	// 			style: { width: '83px' },
-	// 			value: getRowsCount(),
-	// 			onChange: onChangeRowsCount,
-	// 			required: true,
-	// 			id: 'table-num-rows',
-	// 			disabled: object.RowCount || object.RowCount === 0 ? false : true,
-	// 		  },
-	// 		},
-	// 		{
-	// 		  component: TextField,
-	// 		  xsSize: 12,
-	// 		  type: 'text',
-	// 		  props: {
-	// 			children: 'Keep Intact',
-	// 			checked: object[TDFConstants.TABLE.KEEP_ROWS_INTACT]
-	// 			  ? object[TDFConstants.TABLE.KEEP_ROWS_INTACT] === 'true'
-	// 				? true
-	// 				: false
-	// 			  : false,
-	// 			onChange: onChangeKeepRowIntact,
-	// 			required: true,
-	// 			id: 'row-keep-intact',
-	// 		  },
-	// 		  justifyLabel: 'flex-start',
-	// 		  justifyComponent: 'left',
-	// 		},
-	// 		{
-	// 		  component: TextField,
-	// 		  xsSize: 12,
-	// 		  type: 'text',
-	// 		  props: {
-	// 			children: 'Keep with Next',
-	// 			checked:
-	// 			  object[TDFConstants.STYLE] &&
-	// 			  object[TDFConstants.STYLE][TDFConstants.TABLE.KEEP_OPTIONS] &&
-	// 			  object[TDFConstants.STYLE][TDFConstants.TABLE.KEEP_OPTIONS][
-	// 				TDFConstants.TABLE.KEEP_WITH_NEXT
-	// 			  ]
-	// 				? object[TDFConstants.STYLE][TDFConstants.TABLE.KEEP_OPTIONS][
-	// 					TDFConstants.TABLE.KEEP_WITH_NEXT
-	// 				  ] === 'true'
-	// 				  ? true
-	// 				  : false
-	// 				: false,
-	// 			onChange: onChangeKeepWithNext,
-	// 			required: true,
-	// 			id: 'row-keep-with-next',
-	// 		  },
-	// 		  justifyLabel: 'flex-start',
-	// 		  justifyComponent: 'left',
-	// 		},
-	// 		{
-	// 		  component: TextField,
-	// 		  xsSize: 12,
-	// 		  type: 'text',
-	// 		  props: {
-	// 			children: 'Suppress Empty Rows',
-	// 			checked: object[TDFConstants.TABLE.SUPPRESS_EMPTY_TABLE]
-	// 			  ? object[TDFConstants.TABLE.SUPPRESS_EMPTY_TABLE] === 'true'
-	// 				? true
-	// 				: false
-	// 			  : false,
-	// 			onChange: onChangeSuppressEmpty,
-	// 			required: true,
-	// 			id: 'row-suppress-empty',
-	// 		  },
-	// 		  justifyLabel: 'flex-start',
-	// 		  justifyComponent: 'left',
-	// 		},
-	// 		getRowHeightValue() !== 'Auto'
-	// 		  ? {
-	// 			  component: TextField,
-	// 			  xsSize: 8,
-	// 			  xsLabel: 4,
-	// 			  type: 'text',
-	// 			  label: 'Data Source:',
-	// 			  props: {
-	// 				value:
-	// 				  object.bindings != undefined && object.bindings != ''
-	// 					? object.bindings.binding.source
-	// 					: '',
-	// 				heading: props.heading,
-	// 				generalPanel: true,
-	// 				object: props.object,
-	// 				getInfo: pattern => {
-	// 				  let sourceBindingPath = pattern.sourceBindingPath;
-	// 				  let __object = JSON.parse(JSON.stringify(object));
-	// 				  if (__object.bindings == undefined) {
-	// 					__object.bindings = {};
-	// 				  }
-	// 				  if (__object.bindings.binding == undefined) {
-	// 					__object.bindings.binding = {};
-	// 				  }
-	// 				  __object.bindings.binding.source = sourceBindingPath;
-	// 				  onChange(__object);
-	// 				},
-	// 				handleClose: handleClose,
-	// 				crossBtnAction: removeBinding,
-	// 			  },
-	// 			}
-	// 		  : undefined,
-	// 	  ],
-	// 	},
-	//   ];
 
 	return (
 		<React.Fragment>
-			{expData.map((pane, paneIndex) => {
-				if (pane !== undefined) {
-					return (
-						<React.Fragment >
-							{pane.controls.map((control, index) => {
-								if (control !== undefined) {
-									return (
-										<React.Fragment key={index}>
-											{control.label && (
-												<Grid
-													item
-													xsSize={control.xsLabel}
-													style={{ paddingTop:'21px' }}
-												>
-													<Label style={{fontSize: '15px',fontWeight: 'bolder'}}>{control.label}</Label>
-												</Grid>
-											)}
-											<Grid
-												item
-												xsSize={control.xsSize}
-												style={{ justifyContent: control.justifyComponent }}
-											>
-												<control.component {...control.props} />
-											</Grid>
-										</React.Fragment>
-									);
-								}
-							})}
-						</React.Fragment>
-					);
-				}
-			})}
-		 </React.Fragment>
+			{!isLoading ? (
+				<CircularProgress style={{ height: '20px', width: '20px' }} />
+			) : (
+				<React.Fragment>
+					{expData.map((pane, paneIndex) => {
+						if (pane !== undefined) {
+							return (
+								<Grid container spacing={3} style={{ paddingTop: '25px' }}>
+									{console.log(updateUser)}
+									{pane.controls.map((control, index) => {
+										if (control !== undefined && control.showNothing !== true) {
+											return (
+												<React.Fragment key={index}>
+													{control.label && (
+														<Grid item xs={control.xsLabel} style={{ paddingTop: '28px' }}>
+															<Label style={{ fontSize: '15px', fontWeight: 'bolder' }}>
+																{control.label}
+															</Label>
+														</Grid>
+													)}
+													<Grid
+														item
+														xs={control.xsSize}
+														style={{ justifyContent: control.justifyComponent }}
+													>
+														<control.component {...control.props} />
+													</Grid>
+												</React.Fragment>
+											);
+										}
+									})}
+								</Grid>
+							);
+						}
+					})}
+				</React.Fragment>
+			)}
+		</React.Fragment>
 	);
 }
-{/* <Grid item xs={12} style={{ display: 'flex'}}>
+{
+	/* <Grid item xs={12} style={{ display: 'flex'}}>
 {userData && userData.profilePhoto ? (
 	<Avatar alt="Photo" src={userData.profilePhoto} style={{ width: '80px', height: '80px' }} />
 ) : userData && userData.profileName ? (
@@ -359,7 +443,8 @@ export default function Profile({ userData }) {
 	{userData && userData.profileName ? userData.profileName : null}
 	{userData && userData.truckName ? userData.truckName : null}
 </h3>
-</Grid> */}
+</Grid> */
+}
 // Language: "English"
 // created_at: "2020-09-29T18:46:20.512Z"
 // email: "usama1@gmail.com"
