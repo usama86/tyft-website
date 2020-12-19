@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Grid from './Ui/Grid';
 import Label from './Ui/Label';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
@@ -427,6 +428,11 @@ export default function Profile({ userData }) {
 							);
 						}
 					})}
+					<div style={{marginTop: '40px',display:'flex'}}>
+					<Button variant="outlined">Update</Button>
+					<Button variant="outlined" style={{marginLeft:'10px'}} onClick={updateVal}>Reset</Button>
+					</div>
+					
 				</React.Fragment>
 			)}
 		</React.Fragment>
