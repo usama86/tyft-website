@@ -2,8 +2,8 @@ import React from 'react';
 import TextField from './Ui/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
-import Grid from '@material-ui/core/Grid';
-
+import Grid from './Ui/Grid';
+import Label from './Ui/Label';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
@@ -51,6 +51,8 @@ export default function Profile({ userData }) {
 		updateVal();
 	}, []);
 
+	const onChangeUserData = () => {};
+
 	const updateVal = async () => {
 		updateUser.email = await userData.email;
 		updateUser.Language = await userData.Language;
@@ -80,121 +82,284 @@ export default function Profile({ userData }) {
 		updateUser.truckWebsite = userData.truckWebsite;
 		SetUpdateUser(updateUser);
 	};
-	const convertDate = (inputFormat) => {
-		function pad(s) {
-			return s < 10 ? '0' + s : s;
+
+	let expData = [
+		{
+			heading: 'Rows',
+			controls: [
+				{
+					label: 'Email:',
+					xsLabel: 12,
+					xsSize: 12,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: [ 'Auto', 'Exact', 'Atleast' ],
+						onChange: onChangeUserData,
+						required: true,
+						id: 'row-heights',
+						value: updateUser.email
+					}
+				},
+				{
+					label: 'Email:',
+					xsLabel: 4,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: [ 'Auto', 'Exact', 'Atleast' ],
+						onChange: onChangeUserData,
+						required: true,
+						id: 'row-heights',
+						value: updateUser.email
+					}
+				},
+				{
+					label: 'Email:',
+					xsLabel: 4,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: [ 'Auto', 'Exact', 'Atleast' ],
+						onChange: onChangeUserData,
+						required: true,
+						id: 'row-heights',
+						value: updateUser.email
+					}
+				},
+				{
+					label: 'Email:',
+					xsLabel: 4,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: [ 'Auto', 'Exact', 'Atleast' ],
+						onChange: onChangeUserData,
+						required: true,
+						id: 'row-heights',
+						value: updateUser.email
+					}
+				},
+				{
+					label: 'Email:',
+					xsLabel: 4,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: [ 'Auto', 'Exact', 'Atleast' ],
+						onChange: onChangeUserData,
+						required: true,
+						id: 'row-heights',
+						value: updateUser.email
+					}
+				}
+			]
 		}
-		var d = new Date(inputFormat);
-		return [ pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear() ].join('/');
-	};
+	];
+	// 		{
+	// 		  xsSize: 4,
+	// 		  component: TextField,
+	// 		  props: {
+	// 			id: 'name',
+	// 			onChange: onChangeRowHeightsVal,
+	// 			className: classes.textControl,
+	// 			value:
+	// 			  object[TDFConstants.TABLE.HEIGHT_TYPE] === 'Auto' ||
+	// 			  object[TDFConstants.TABLE.HEIGHT_TYPE] === 'auto'
+	// 				? Number(object[TDFConstants.TABLE.EXACT_HEIGHT]) + ' pt' //TG-40792
+	// 				: Number(object[TDFConstants.TABLE.HEIGHT]) + ' pt',
+	// 			disabled: getRowHeightValue() === 'Auto' ? true : false,
+	// 			toleranceLevel: 2,
+	// 			showUnit: true,
+	// 			useConverter: true,
+	// 			precision: 2,
+	// 			unit: getObject(props, ['document', 'ScaleUnit'], 'pt'),
+	// 		  },
+	// 		},
+	// 		{
+	// 		  component: TextField,
+	// 		  xsSize: 8,
+	// 		  type: 'text',
+	// 		  props: {
+	// 			children: 'Group Rows by Rows Count',
+	// 			checked: object.RowCount || object.RowCount === 0 ? true : false,
+	// 			onChange: onChangeRowsCountCheck,
+	// 			required: true,
+	// 			id: 'group-rows-by-rows-count',
+	// 		  },
+	// 		  justifyLabel: 'flex-start',
+	// 		  justifyComponent: 'left',
+	// 		},
+	// 		{
+	// 		  xsSize: 4,
+	// 		  component: TextField,
+	// 		  props: {
+	// 			type: 'number',
+	// 			style: { width: '83px' },
+	// 			value: getRowsCount(),
+	// 			onChange: onChangeRowsCount,
+	// 			required: true,
+	// 			id: 'table-num-rows',
+	// 			disabled: object.RowCount || object.RowCount === 0 ? false : true,
+	// 		  },
+	// 		},
+	// 		{
+	// 		  component: TextField,
+	// 		  xsSize: 12,
+	// 		  type: 'text',
+	// 		  props: {
+	// 			children: 'Keep Intact',
+	// 			checked: object[TDFConstants.TABLE.KEEP_ROWS_INTACT]
+	// 			  ? object[TDFConstants.TABLE.KEEP_ROWS_INTACT] === 'true'
+	// 				? true
+	// 				: false
+	// 			  : false,
+	// 			onChange: onChangeKeepRowIntact,
+	// 			required: true,
+	// 			id: 'row-keep-intact',
+	// 		  },
+	// 		  justifyLabel: 'flex-start',
+	// 		  justifyComponent: 'left',
+	// 		},
+	// 		{
+	// 		  component: TextField,
+	// 		  xsSize: 12,
+	// 		  type: 'text',
+	// 		  props: {
+	// 			children: 'Keep with Next',
+	// 			checked:
+	// 			  object[TDFConstants.STYLE] &&
+	// 			  object[TDFConstants.STYLE][TDFConstants.TABLE.KEEP_OPTIONS] &&
+	// 			  object[TDFConstants.STYLE][TDFConstants.TABLE.KEEP_OPTIONS][
+	// 				TDFConstants.TABLE.KEEP_WITH_NEXT
+	// 			  ]
+	// 				? object[TDFConstants.STYLE][TDFConstants.TABLE.KEEP_OPTIONS][
+	// 					TDFConstants.TABLE.KEEP_WITH_NEXT
+	// 				  ] === 'true'
+	// 				  ? true
+	// 				  : false
+	// 				: false,
+	// 			onChange: onChangeKeepWithNext,
+	// 			required: true,
+	// 			id: 'row-keep-with-next',
+	// 		  },
+	// 		  justifyLabel: 'flex-start',
+	// 		  justifyComponent: 'left',
+	// 		},
+	// 		{
+	// 		  component: TextField,
+	// 		  xsSize: 12,
+	// 		  type: 'text',
+	// 		  props: {
+	// 			children: 'Suppress Empty Rows',
+	// 			checked: object[TDFConstants.TABLE.SUPPRESS_EMPTY_TABLE]
+	// 			  ? object[TDFConstants.TABLE.SUPPRESS_EMPTY_TABLE] === 'true'
+	// 				? true
+	// 				: false
+	// 			  : false,
+	// 			onChange: onChangeSuppressEmpty,
+	// 			required: true,
+	// 			id: 'row-suppress-empty',
+	// 		  },
+	// 		  justifyLabel: 'flex-start',
+	// 		  justifyComponent: 'left',
+	// 		},
+	// 		getRowHeightValue() !== 'Auto'
+	// 		  ? {
+	// 			  component: TextField,
+	// 			  xsSize: 8,
+	// 			  xsLabel: 4,
+	// 			  type: 'text',
+	// 			  label: 'Data Source:',
+	// 			  props: {
+	// 				value:
+	// 				  object.bindings != undefined && object.bindings != ''
+	// 					? object.bindings.binding.source
+	// 					: '',
+	// 				heading: props.heading,
+	// 				generalPanel: true,
+	// 				object: props.object,
+	// 				getInfo: pattern => {
+	// 				  let sourceBindingPath = pattern.sourceBindingPath;
+	// 				  let __object = JSON.parse(JSON.stringify(object));
+	// 				  if (__object.bindings == undefined) {
+	// 					__object.bindings = {};
+	// 				  }
+	// 				  if (__object.bindings.binding == undefined) {
+	// 					__object.bindings.binding = {};
+	// 				  }
+	// 				  __object.bindings.binding.source = sourceBindingPath;
+	// 				  onChange(__object);
+	// 				},
+	// 				handleClose: handleClose,
+	// 				crossBtnAction: removeBinding,
+	// 			  },
+	// 			}
+	// 		  : undefined,
+	// 	  ],
+	// 	},
+	//   ];
+
 	return (
-		<Grid container style={{ width: '100%', height: '100%', marginTop: '20px' }}>
-			<Grid item xs={12} style={{display: 'flex'  }} >
-				{userData && userData.profilePhoto ? (
-					<Avatar alt="Photo" src={userData.profilePhoto} style={{ width: '80px', height: '80px' }} />
-				) : userData && userData.profileName ? (
-					<Avatar style={{ width: '80px', height: '80px' }}>
-						{userData.profileName.charAt(0).toUpperCase()}
-					</Avatar>
-				) : null}
-				<h3
-					style={{
-					    height: '9%',
-                        width: '19%',
-                        margin: '29px',
-					}}
-				>
-					{userData && userData.profileName ? userData.profileName : null}
-					{userData && userData.truckName ? userData.truckName : null}
-				</h3>
-			</Grid>
-			{userData && userData.created_at ? (
-				<TextField label="Created at" disabled defaultValue={convertDate(userData.created_at)} />
-			) : null}
-			{userData && userData.email ? (
-				<TextField
-					id="outlined-required"
-					label="Email"
-					value={updateUser.email}
-					defaultValue="Hello World"
-					onChange={(e) => {
-						updateUser.email = e.target.value;
-						console.log(updateUser);
-						SetUpdateUser(updateUser);
-					}}
-				/>
-			) : null}
-			{userData && userData.Language ? (
-				<TextField
-					id="standard-required1"
-					label="Language"
-					value={updateUser.Language}
-					onChange={(e) => {
-						updateUser.Language = e.target.value;
-						console.log(updateUser);
-						SetUpdateUser(updateUser);
-					}}
-				/>
-			) : null}
-			{userData && userData.isAdmin ? (
-				<TextField id="standard-required2" label="is Admin" defaultValue={userData.isAdmin} />
-			) : null}
-			{userData && userData.phoneNumber ? (
-				<TextField id="standard-required3" label="phone Number" defaultValue={userData.phoneNumber} />
-			) : null}
-			{userData && userData.profileName ? (
-				<TextField id="standard-required4" label="profile Name" defaultValue={userData.profileName} />
-			) : null}
-			{userData && userData.userType ? (
-				<TextField id="standard-required5" label="User Type" defaultValue={userData.userType} />
-			) : null}
-
-			{userData && userData.TruckID ? (
-				<TextField id="standard-required5" label="Truck ID" disabled defaultValue={userData.TruckID} />
-			) : null}
-
-			{userData && userData.truckName ? (
-				<TextField id="standard-required5" label="Truck Name" defaultValue={userData.truckName} />
-			) : null}
-			{userData && userData.truckEmail ? (
-				<TextField id="standard-required5" label="Truck Email" defaultValue={userData.truckEmail} />
-			) : null}
-			{userData && userData.truckWebsite ? (
-				<TextField id="standard-required5" label="Truck Website" defaultValue={userData.truckWebsite} />
-			) : null}
-			{userData && userData.truckLogo ? (
-				<TextField id="standard-required5" label="Truck Logo" defaultValue={userData.truckLogo} />
-			) : null}
-			{userData && userData.truckContact ? (
-				<TextField id="standard-required5" label="Truck Contact" defaultValue={userData.truckContact} />
-			) : null}
-			{userData && userData.truckCity ? (
-				<TextField id="standard-required5" label="Truck City" defaultValue={userData.truckCity} />
-			) : null}
-			{userData && userData.status ? (
-				<TextField id="standard-required5" label="Truck Status" defaultValue={userData.status} />
-			) : null}
-			{userData && userData.socialMedia && userData.socialMedia.facebook ? (
-				<TextField id="standard-required5" label="Facebook" defaultValue={userData.socialMedia.facebook} />
-			) : null}
-			{userData && userData.socialMedia && userData.socialMedia.instagram ? (
-				<TextField id="standard-required5" label="Instagram" defaultValue={userData.socialMedia.instagram} />
-			) : null}
-			{userData && userData.socialMedia && userData.socialMedia.twitter ? (
-				<TextField id="standard-required5" label="Twitter" defaultValue={userData.socialMedia.twitter} />
-			) : null}
-			{userData && userData.businessDesc ? (
-				<TextField id="standard-required5" label="Business Description" defaultValue={userData.businessDesc} />
-			) : null}
-			{userData && userData.MenuID ? (
-				<TextField id="standard-required5" label="Menu ID" disabled defaultValue={userData.MenuID} />
-			) : null}
-			{/* {userData.coverPhoto ? <TextField  id="standard-required5" label="Cover Photo"  defaultValue={userData.coverPhoto} />:null} */}
-			{/* {userData.selectedServingCusines ? <TextField  id="standard-required5" label="Cusine"  defaultValue={userData.selectedServingCusines} />:null} */}
-		</Grid>
+		<React.Fragment>
+			{expData.map((pane, paneIndex) => {
+				if (pane !== undefined) {
+					return (
+						<React.Fragment >
+							{pane.controls.map((control, index) => {
+								if (control !== undefined) {
+									return (
+										<React.Fragment key={index}>
+											{control.label && (
+												<Grid
+													item
+													xsSize={control.xsLabel}
+													style={{ paddingTop:'21px' }}
+												>
+													<Label style={{fontSize: '15px',fontWeight: 'bolder'}}>{control.label}</Label>
+												</Grid>
+											)}
+											<Grid
+												item
+												xsSize={control.xsSize}
+												style={{ justifyContent: control.justifyComponent }}
+											>
+												<control.component {...control.props} />
+											</Grid>
+										</React.Fragment>
+									);
+								}
+							})}
+						</React.Fragment>
+					);
+				}
+			})}
+		 </React.Fragment>
 	);
 }
-
+{/* <Grid item xs={12} style={{ display: 'flex'}}>
+{userData && userData.profilePhoto ? (
+	<Avatar alt="Photo" src={userData.profilePhoto} style={{ width: '80px', height: '80px' }} />
+) : userData && userData.profileName ? (
+	<Avatar style={{ width: '80px', height: '80px' }}>
+		{userData.profileName.charAt(0).toUpperCase()}
+	</Avatar>
+) : null}
+<h3
+	style={{
+		height: '9%',
+		width: '19%',
+		margin: '29px'
+	}}
+>
+	{userData && userData.profileName ? userData.profileName : null}
+	{userData && userData.truckName ? userData.truckName : null}
+</h3>
+</Grid> */}
 // Language: "English"
 // created_at: "2020-09-29T18:46:20.512Z"
 // email: "usama1@gmail.com"
@@ -238,3 +403,91 @@ export default function Profile({ userData }) {
 // truckName: "The Snow churro"
 // truckWebsite: "https://thesnowychurro.square.site"
 // user: "Truck"
+
+// {userData && userData.created_at ? (
+// 	<TextField label="Created at" disabled defaultValue={convertDate(userData.created_at)} />
+// ) : null}
+// {userData && userData.email ? (
+// 	<TextField
+// 		id="outlined-required"
+// 		label="Email"
+// 		value={updateUser.email}
+// 		defaultValue="Hello World"
+// 		onChange={(e) => {
+// 			updateUser.email = e.target.value;
+// 			console.log(updateUser);
+// 			SetUpdateUser(updateUser);
+// 		}}
+// 	/>
+// ) : null}
+// {userData && userData.Language ? (
+// 	<TextField
+// 		id="standard-required1"
+// 		label="Language"
+// 		value={updateUser.Language}
+// 		onChange={(e) => {
+// 			updateUser.Language = e.target.value;
+// 			console.log(updateUser);
+// 			SetUpdateUser(updateUser);
+// 		}}
+// 	/>
+// ) : null}
+// {userData && userData.isAdmin ? (
+// 	<TextField id="standard-required2" label="is Admin" defaultValue={userData.isAdmin} />
+// ) : null}
+// {userData && userData.phoneNumber ? (
+// 	<TextField id="standard-required3" label="phone Number" defaultValue={userData.phoneNumber} />
+// ) : null}
+// {userData && userData.profileName ? (
+// 	<TextField id="standard-required4" label="profile Name" defaultValue={userData.profileName} />
+// ) : null}
+// {userData && userData.userType ? (
+// 	<TextField id="standard-required5" label="User Type" defaultValue={userData.userType} />
+// ) : null}
+
+// {userData && userData.TruckID ? (
+// 	<TextField id="standard-required5" label="Truck ID" disabled defaultValue={userData.TruckID} />
+// ) : null}
+
+// {userData && userData.truckName ? (
+// 	<TextField id="standard-required5" label="Truck Name" defaultValue={userData.truckName} />
+// ) : null}
+// {userData && userData.truckEmail ? (
+// 	<TextField id="standard-required5" label="Truck Email" defaultValue={userData.truckEmail} />
+// ) : null}
+// {userData && userData.truckWebsite ? (
+// 	<TextField id="standard-required5" label="Truck Website" defaultValue={userData.truckWebsite} />
+// ) : null}
+// {userData && userData.truckLogo ? (
+// 	<TextField id="standard-required5" label="Truck Logo" defaultValue={userData.truckLogo} />
+// ) : null}
+// {userData && userData.truckContact ? (
+// 	<TextField id="standard-required5" label="Truck Contact" defaultValue={userData.truckContact} />
+// ) : null}
+// {userData && userData.truckCity ? (
+// 	<TextField id="standard-required5" label="Truck City" defaultValue={userData.truckCity} />
+// ) : null}
+// {userData && userData.status ? (
+// 	<TextField id="standard-required5" label="Truck Status" defaultValue={userData.status} />
+// ) : null}
+// {userData && userData.socialMedia && userData.socialMedia.facebook ? (
+// 	<TextField id="standard-required5" label="Facebook" defaultValue={userData.socialMedia.facebook} />
+// ) : null}
+// {userData && userData.socialMedia && userData.socialMedia.instagram ? (
+// 	<TextField id="standard-required5" label="Instagram" defaultValue={userData.socialMedia.instagram} />
+// ) : null}
+// {userData && userData.socialMedia && userData.socialMedia.twitter ? (
+// 	<TextField id="standard-required5" label="Twitter" defaultValue={userData.socialMedia.twitter} />
+// ) : null}
+// {userData && userData.businessDesc ? (
+// 	<TextField id="standard-required5" label="Business Description" defaultValue={userData.businessDesc} />
+// ) : null}
+// {userData && userData.MenuID ? (
+// 	<TextField id="standard-required5" label="Menu ID" disabled defaultValue={userData.MenuID} />
+// ) : null}
+{
+	/* {userData.coverPhoto ? <TextField  id="standard-required5" label="Cover Photo"  defaultValue={userData.coverPhoto} />:null} */
+}
+{
+	/* {userData.selectedServingCusines ? <TextField  id="standard-required5" label="Cusine"  defaultValue={userData.selectedServingCusines} />:null} */
+}

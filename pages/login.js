@@ -48,8 +48,8 @@ const Login = (props) => {
 						error: true
 					});
 					setErrorMsg(true);
+					setLoader(false);
 				}
-				setLoader(false);
 			})
 			.catch((error) => {
 				console.log(error);
@@ -148,6 +148,7 @@ const Login = (props) => {
 										style={{ width: '100px', height: '35px' }}
 										color="#495057"
 										onClick={onSubmit}
+										disabled={loader ? true : false}
 									>
 										{loader ? (
 											<CircularProgress style={{ height: '20px', width: '20px' }} />

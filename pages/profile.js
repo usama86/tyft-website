@@ -4,7 +4,7 @@ import styles from '../styles/Home.module.css'
 import App from './../src/AdminPanel/App';
 export default function Profile() {
   return (
-    <div className={styles.container}>
+    <React.Fragment>
       <Head>
         <title>TYFT Admin Panelss</title>
         <link rel="icon" href="/favicon.ico" />
@@ -14,6 +14,6 @@ export default function Profile() {
  
         <App/>
 
-    </div>
+    </React.Fragment>
   )
 }

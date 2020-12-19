@@ -18,7 +18,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    height:'100%'
+   
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
+    height:'100%'
   },
   drawerPaper: {
     width: drawerWidth,
@@ -45,7 +46,7 @@ function Drawers(props) {
   const classes = useStyles();
 
   return (
-    <div className={classes.root}>
+    <React.Fragment>
       <CssBaseline />
       {/* <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
@@ -62,7 +63,7 @@ function Drawers(props) {
         }}
       >
         {/* <Toolbar /> */}
-        <div className={classes.drawerContainer}>
+        {/* <div className={classes.drawerContainer}> */}
         {Object.keys(props.userData).length === 0 ? <List>
            {['Customer', 'Supplier','Truck'].map((text, index) => (
               <ListItem button key={text} style={{background: props.drawerPage===text ? 'rgb(56,56,56)':''}} onClick={()=>{props.setDrawerPage(text)}}>
@@ -81,9 +82,9 @@ function Drawers(props) {
             
           </List>}
           <Divider />
-        </div>
+        {/* </div> */}
       </Drawer>
-    </div>
+    </React.Fragment>
   );
 }
 export default withRouter(Drawers);

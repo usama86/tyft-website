@@ -5,7 +5,8 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Popup from './Ui/Popup';
 // import Button from '@material-ui/core/Button';
 import Skeleton from '@material-ui/lab/Skeleton';
-import { withRouter } from 'next/router'
+import { withRouter } from 'next/router';
+import {convertDate} from './../util/setDate';
 function HomePage(props) {
 	const theme = createMuiTheme({
 		overrides: {
@@ -59,8 +60,10 @@ function HomePage(props) {
 					if (Data) {
 						for (let i = 0; i < Data.length; i++) {
 							if (Data[i].userType === 'Customer' && props.drawerPage === 'Customer') {
+								Data[i].created_at = convertDate(Data[i].created_at);
 								newData.push({ ...Data[i] });
 							} else if (Data[i].userType === 'Supplier' && props.drawerPage === 'Supplier') {
+								Data[i].created_at = convertDate(Data[i].created_at);
 								newData.push({ ...Data[i] });
 							} else {
 							}
@@ -141,7 +144,7 @@ function HomePage(props) {
 		<React.Fragment>
 			<MaterialTable
 				title={props.drawerPage}
-				style={{ height: '100%', color: 'black' }}
+				style={{ marginTop: '4vh',color:'black' }}
 				columns={getColumn()}
         data={data}
         // actions={[
