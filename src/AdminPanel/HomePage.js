@@ -96,6 +96,7 @@ function HomePage(props) {
 				}
 			}
 			else{
+				setIsLoading(true);
 				axios
 				.get('https://tyft-backend.herokuapp.com/api/general/getradius')
 				.then(async (Response) => {
