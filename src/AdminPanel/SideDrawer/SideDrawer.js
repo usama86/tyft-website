@@ -13,7 +13,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import { withRouter } from 'next/router';
-import { FiUsers } from 'react-icons/fi';
+import { FiUsers,FiSettings } from 'react-icons/fi';
 import { GiFoodTruck } from 'react-icons/gi';
 import { ImUserTie } from 'react-icons/im';
 
@@ -70,7 +70,7 @@ function Drawers(props) {
 				{/* ,'Setting' */}
 				{Object.keys(props.userData).length === 0 ? (
 					<List>
-						{[ 'Customer', 'Supplier', 'Truck' ].map((text, index) => (
+						{[ 'Customer', 'Supplier', 'Truck','Setting' ].map((text, index) => (
 							<ListItem
 								button
 								key={text}
@@ -86,6 +86,8 @@ function Drawers(props) {
 										<ImUserTie color="white" size={23} />
 									) : index === 2 ? (
 										<GiFoodTruck color="white" size={23} />
+									) : index === 3 ? (
+										<FiSettings color="white" size={23} />
 									) : null}
 								</ListItemIcon>
 								<ListItemText primary={text} style={{ color: 'white' }} />

@@ -15,64 +15,11 @@ export default function FormDialog(props) {
 	return (
 		<div>
 			<Dialog open={props.open} onClose={handleClose} aria-labelledby="form-dialog-title">
-				<DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+				<DialogTitle id="form-dialog-title">Update</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						To subscribe to this website, please enter your email address here. We will send updates
-						occasionally.
+						infomration is Updated
 					</DialogContentText>
-					{props.columnData.Language ? (
-						<TextField
-							autoFocus
-							margin="dense"
-							id="name1"
-							value={props.columnData.Language}
-							label="Language"
-							fullWidth
-						/>
-					) : null}
-					<TextField
-						autoFocus
-						margin="dense"
-						id="name2"
-						value={props.columnData.profileName}
-						label="Name"
-						fullWidth
-					/>
-
-					<TextField
-						autoFocus
-						margin="dense"
-						id="name3"
-						value={props.columnData.email}
-						label="Email"
-						fullWidth
-					/>
-					<TextField
-						autoFocus
-						margin="dense"
-						id="name4"
-						value={props.columnData.phoneNumber}
-						label="Phone Number"
-						fullWidth
-					/>
-
-					<TextField
-						autoFocus
-						margin="dense"
-						id="name5"
-						value={props.columnData.userType}
-						label="User Type"
-						fullWidth
-					/>
-					<TextField
-						autoFocus
-						margin="dense"
-						id="name6"
-						value={props.columnData.created_at}
-						label="Created at"
-						fullWidth
-					/>
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={handleClose} color="primary">

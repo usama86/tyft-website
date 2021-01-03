@@ -5,6 +5,9 @@ import Grid from './Ui/Grid';
 import Label from './Ui/Label';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
+import axios from 'axios';
+import Popup from './Ui/Popup';
+import Select from './Ui/Select/ELXSelect';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
@@ -44,10 +47,12 @@ export default function Profile({ userData }) {
 		truckEmail: null,
 		truckLogo: null,
 		truckName: null,
-		truckWebsite: null
+		truckWebsite: null,
+		activeStatus:'Active'
 	});
-	const [ isLoading, SetIsLoading ] = React.useState(false);
+	const [ isLoading, setIsLoading ] = React.useState(false);
 	const [ reset, isReset ] = React.useState(false);
+	const [ open, setOpen ] = React.useState(false);
 	React.useEffect(() => {
 		updateVal();
 	}, []);
@@ -60,9 +65,25 @@ export default function Profile({ userData }) {
 		isReset(!reset);
 	};
 
-	const updateVal = async () => {
-		SetIsLoading(false);
-
+	const updateVal = async (e, isUpdate) => {
+		setIsLoading(true);
+		// setOpen(true);
+		if (isUpdate) {
+			// axios
+			// 	.post('https://tyft-backend.herokuapp.com' + '/api/users/updateData', updateUser)
+			// 	.then(async (Response) => {
+			// 		let responseMessage = await Response.data.message;
+			// 		console.log(responseMessage);
+			// 		if (responseMessage === 'Auth Successful')
+			// 		{
+			// 			setOpen(true);
+			// 		} 
+			// 	})
+			// 	.catch((error) => {
+			// 		console.log(error);
+			// 	});
+			alert("Data Updated")
+		}
 		updateUser.email = await userData.email;
 		updateUser.Language = await userData.Language;
 		updateUser.isAdmin = await userData.isAdmin;
@@ -90,7 +111,7 @@ export default function Profile({ userData }) {
 		updateUser.truckWebsite = await userData.truckWebsite;
 		SetUpdateUser(updateUser);
 		console.log(updateUser);
-		SetIsLoading(true);
+		setIsLoading(false);
 	};
 
 	let expData = [
@@ -118,10 +139,10 @@ export default function Profile({ userData }) {
 							label: 'Language:',
 							xsLabel: 1,
 							xsSize: 3,
-							component: TextField,
+							component: Select,
 							props: {
 								className: classes.inputclass,
-								data: [ 'Auto', 'Exact', 'Atleast' ],
+								data: [ 'English', 'Spanish'],
 								onChange: (e) => onChangeUserData(e, 'Language'),
 								required: true,
 								id: 'row-heights1',
@@ -129,22 +150,22 @@ export default function Profile({ userData }) {
 							}
 						}
 					: { showNothing: true },
-				userData.isAdmin
-					? {
-							label: 'is Admin:',
-							xsLabel: 1,
-							xsSize: 3,
-							component: TextField,
-							props: {
-								className: classes.inputclass,
-								data: [ 'Auto', 'Exact', 'Atleast' ],
-								onChange: (e) => onChangeUserData(e, 'isAdmin'),
-								required: true,
-								id: 'row-heights2',
-								value: updateUser.isAdmin
-							}
-						}
-					: { showNothing: true },
+				// userData.isAdmin
+				// 	? {
+				// 			label: 'is Admin:',
+				// 			xsLabel: 1,
+				// 			xsSize: 3,
+				// 			component: TextField,
+				// 			props: {
+				// 				className: classes.inputclass,
+				// 				data: [ 'Auto', 'Exact', 'Atleast' ],
+				// 				onChange: (e) => onChangeUserData(e, 'isAdmin'),
+				// 				required: true,
+				// 				id: 'row-heights2',
+				// 				value: updateUser.isAdmin
+				// 			}
+				// 		}
+				// 	: { showNothing: true },
 				userData.phoneNumber
 					? {
 							label: 'phone Number:',
@@ -189,7 +210,8 @@ export default function Profile({ userData }) {
 								onChange: (e) => onChangeUserData(e, 'userType'),
 								required: true,
 								id: 'row-heights4',
-								value: updateUser.userType
+								value: updateUser.userType,
+								disabled:true
 							}
 						}
 					: { showNothing: true },
@@ -236,6 +258,8 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
+								multiline:true,
+								rows:3,
 								onChange: (e) => onChangeUserData(e, 'businessDesc'),
 								required: true,
 								id: 'row-heights4',
@@ -243,7 +267,7 @@ export default function Profile({ userData }) {
 							}
 						}
 					: { showNothing: true },
-				userData.socialMedia && userData.socialMedia!=='undefined'
+				userData.socialMedia && userData.socialMedia !== 'undefined'
 					? {
 							label: 'Facebook:',
 							xsLabel: 1,
@@ -259,7 +283,7 @@ export default function Profile({ userData }) {
 							}
 						}
 					: { showNothing: true },
-				userData.socialMedia && userData.socialMedia!=='undefined'
+				userData.socialMedia && userData.socialMedia !== 'undefined'
 					? {
 							label: 'Instagram:',
 							xsLabel: 1,
@@ -275,7 +299,7 @@ export default function Profile({ userData }) {
 							}
 						}
 					: { showNothing: true },
-				userData.socialMedia && userData.socialMedia!=='undefined'
+				userData.socialMedia && userData.socialMedia !== 'undefined'
 					? {
 							label: 'Twitter:',
 							xsLabel: 1,
@@ -296,10 +320,10 @@ export default function Profile({ userData }) {
 							label: 'Status:',
 							xsLabel: 1,
 							xsSize: 3,
-							component: TextField,
+							component: Select,
 							props: {
 								className: classes.inputclass,
-								data: [ 'Auto', 'Exact', 'Atleast' ],
+								data: [ 'Open', 'Close'],
 								onChange: (e) => onChangeUserData(e, 'status'),
 								required: true,
 								id: 'row-heights4',
@@ -386,14 +410,28 @@ export default function Profile({ userData }) {
 								value: updateUser.truckWebsite
 							}
 						}
-					: { showNothing: true }
+					: { showNothing: true },
+					{
+						label: 'Active Status:',
+						xsLabel: 1,
+						xsSize: 3,
+						component: Select,
+						props: {
+							className: classes.inputclass,
+							data: [ 'Active', 'InActive' ],
+							onChange: (e) => onChangeUserData(e, 'activeStatus'),
+							required: true,
+							id: 'row-heights4',
+							value: updateUser.activeStatus
+						}
+					}
 			]
 		}
 	];
 
 	return (
 		<React.Fragment>
-			{!isLoading ? (
+			{isLoading ? (
 				<CircularProgress style={{ height: '20px', width: '20px' }} />
 			) : (
 				<React.Fragment>
@@ -428,13 +466,20 @@ export default function Profile({ userData }) {
 							);
 						}
 					})}
-					<div style={{marginTop: '40px',display:'flex'}}>
-					<Button variant="outlined">Update</Button>
-					<Button variant="outlined" style={{marginLeft:'10px'}} onClick={updateVal}>Reset</Button>
+					<div style={{ marginTop: '40px', display: 'flex' }}>
+						<Button variant="outlined" onClick={(e) => updateVal(e, 'update')}>
+							Update
+						</Button>
+						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={()=>alert("User Deleted")}>
+							Delete
+						</Button>
+						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={updateVal}>
+							Reset
+						</Button>
 					</div>
-					
 				</React.Fragment>
 			)}
+		<Popup open={open} setOpen={setOpen} /> 	
 		</React.Fragment>
 	);
 }
