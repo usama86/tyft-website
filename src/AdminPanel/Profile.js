@@ -8,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import axios from 'axios';
 import Popup from './Ui/Popup';
 import Select from './Ui/Select/ELXSelect';
+import MaterialTable from 'material-table';
+import { withRouter } from 'next/router';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
@@ -17,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-export default function Profile({ userData }) {
+function Profile({ userData,...props }) {
 	const classes = useStyles();
 	const [ updateUser, SetUpdateUser ] = React.useState({
 		email: null,
@@ -48,11 +50,19 @@ export default function Profile({ userData }) {
 		truckLogo: null,
 		truckName: null,
 		truckWebsite: null,
-		activeStatus:'Active'
+		activeStatus: 'Active'
 	});
 	const [ isLoading, setIsLoading ] = React.useState(false);
 	const [ reset, isReset ] = React.useState(false);
 	const [ open, setOpen ] = React.useState(false);
+	const [ popupData, setPopupData ] = React.useState([]);
+	const [ tableColumn, setTableColumn ] = React.useState([
+		{ title: 'Name', field: 'name' },
+		{ title: 'Category', field: 'category' },
+		{ title: 'Description', field: 'description' },
+
+		{ title: 'Price', field: 'price' }
+	]);
 	React.useEffect(() => {
 		updateVal();
 	}, []);
@@ -67,23 +77,8 @@ export default function Profile({ userData }) {
 
 	const updateVal = async (e, isUpdate) => {
 		setIsLoading(true);
+		console.log(updateUser.userType);
 		// setOpen(true);
-		if (isUpdate) {
-			// axios
-			// 	.post('https://tyft-backend.herokuapp.com' + '/api/users/updateData', updateUser)
-			// 	.then(async (Response) => {
-			// 		let responseMessage = await Response.data.message;
-			// 		console.log(responseMessage);
-			// 		if (responseMessage === 'Auth Successful')
-			// 		{
-			// 			setOpen(true);
-			// 		} 
-			// 	})
-			// 	.catch((error) => {
-			// 		console.log(error);
-			// 	});
-			alert("Data Updated")
-		}
 		updateUser.email = await userData.email;
 		updateUser.Language = await userData.Language;
 		updateUser.isAdmin = await userData.isAdmin;
@@ -109,9 +104,104 @@ export default function Profile({ userData }) {
 		updateUser.truckLogo = await userData.truckLogo;
 		updateUser.truckName = await userData.truckName;
 		updateUser.truckWebsite = await userData.truckWebsite;
+		if (userData.activeStatus) updateUser.activeStatus = await userData.activeStatus;
+
 		SetUpdateUser(updateUser);
 		console.log(updateUser);
 		setIsLoading(false);
+	};
+
+	const submitData = () => {
+		if (updateUser.userType === 'Customer' || updateUser.userType === 'Supplier') {
+			let data = {
+				_id: userData._id,
+				email: updateUser.email,
+				profileName: updateUser.profileName,
+				phoneNumber: updateUser.phoneNumber,
+				Language: updateUser.Language
+			};
+			axios
+				.post('https://tyft-backend.herokuapp.com' + '/api/users/updateuser', data)
+				.then(async (Response) => {
+					let responseMessage = await Response.data.code;
+					console.log(responseMessage);
+					if (responseMessage === 'ABT0000') {
+						alert('Data Updated');
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		} else {
+			//truck
+			let socialMedia = {
+				facebook: updateUser.socialMedia.facebook,
+				instagram: updateUser.socialMedia.instagram,
+				twitter: updateUser.socialMedia.twitter
+			};
+			let data = {
+				_id: userData._id,
+				truckName: updateUser.truckName,
+				businessDesc: updateUser.businessDesc,
+				truckContact: updateUser.truckContact,
+				truckEmail: updateUser.truckEmail,
+				truckCity: updateUser.truckCity,
+				truckWebsite: updateUser.truckWebsite,
+				socialMedia: socialMedia,
+				status: updateUser.status,
+				activeStatus: updateUser.activeStatus
+			};
+			axios
+				.post('https://tyft-backend.herokuapp.com' + '/api/supplier/updatetruck', data)
+				.then(async (Response) => {
+					let responseMessage = await Response.data.code;
+					console.log(responseMessage);
+					if (responseMessage === 'ABT0000') {
+						alert('Data Updated');
+					}
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		}
+	};
+	const deleteUser = () => {
+		let type = '';
+		if (updateUser.userType === 'Customer' || updateUser.userType === 'Supplier') type = 'User';
+		else type = 'Truck';
+		let data = {
+			_id: userData._id,
+			type: type
+		};
+		axios
+			.post('https://tyft-backend.herokuapp.com' + '/api/general/delete', data)
+			.then(async (Response) => {
+				let responseMessage = await Response.data.code;
+				console.log(responseMessage);
+				if (responseMessage === 'ABT0000') {
+					alert('Deleted');
+					props.router.push('/home');
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+	const getMenu = () => {
+		let sendID = {
+			_id: userData.MenuID
+		};
+		axios
+			.post('https://tyft-backend.herokuapp.com' + '/api/menu/getmenu', sendID)
+			.then(async (Response) => {
+				let responseMessage = await Response.data.MenuData;
+				console.log(responseMessage);
+				setPopupData(responseMessage);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		setOpen(true);
 	};
 
 	let expData = [
@@ -129,7 +219,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'email'),
 								required: true,
-								id: 'row-heights',
+								id: 'row-heights0',
 								value: updateUser.email
 							}
 						}
@@ -142,7 +232,7 @@ export default function Profile({ userData }) {
 							component: Select,
 							props: {
 								className: classes.inputclass,
-								data: [ 'English', 'Spanish'],
+								data: [ 'English', 'Spanish' ],
 								onChange: (e) => onChangeUserData(e, 'Language'),
 								required: true,
 								id: 'row-heights1',
@@ -209,9 +299,9 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'userType'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights43',
 								value: updateUser.userType,
-								disabled:true
+								disabled: true
 							}
 						}
 					: { showNothing: true },
@@ -226,7 +316,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'TruckID'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights5',
 								value: updateUser.TruckID,
 								disabled: true
 							}
@@ -234,7 +324,7 @@ export default function Profile({ userData }) {
 					: { showNothing: true },
 				userData.MenuID
 					? {
-							label: 'Menu ID:',
+							label: 'Menu:',
 							xsLabel: 1,
 							xsSize: 3,
 							component: TextField,
@@ -242,9 +332,10 @@ export default function Profile({ userData }) {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'MenuID'),
+								onClick: () => getMenu(),
 								required: true,
-								id: 'row-heights4',
-								value: updateUser.MenuID,
+								id: 'row-heights6',
+								value: 'Get truck menu',
 								disabled: true
 							}
 						}
@@ -258,11 +349,11 @@ export default function Profile({ userData }) {
 							props: {
 								className: classes.inputclass,
 								data: [ 'Auto', 'Exact', 'Atleast' ],
-								multiline:true,
-								rows:3,
+								multiline: true,
+								rows: 3,
 								onChange: (e) => onChangeUserData(e, 'businessDesc'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights7',
 								value: updateUser.businessDesc
 							}
 						}
@@ -278,7 +369,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'facebook'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights8',
 								value: updateUser.socialMedia.facebook
 							}
 						}
@@ -294,7 +385,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'instagram'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights9',
 								value: updateUser.socialMedia.instagram
 							}
 						}
@@ -310,7 +401,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'twitter'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights11',
 								value: updateUser.socialMedia.twitter
 							}
 						}
@@ -323,10 +414,10 @@ export default function Profile({ userData }) {
 							component: Select,
 							props: {
 								className: classes.inputclass,
-								data: [ 'Open', 'Close'],
+								data: [ 'Open', 'Close' ],
 								onChange: (e) => onChangeUserData(e, 'status'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights22',
 								value: updateUser.status
 							}
 						}
@@ -342,7 +433,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'truckCity'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights33',
 								value: updateUser.truckCity
 							}
 						}
@@ -358,7 +449,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'truckContact'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights44',
 								value: updateUser.truckContact
 							}
 						}
@@ -374,7 +465,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'truckEmail'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights55',
 								value: updateUser.truckEmail
 							}
 						}
@@ -390,7 +481,7 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'truckName'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights66',
 								value: updateUser.truckName
 							}
 						}
@@ -406,25 +497,25 @@ export default function Profile({ userData }) {
 								data: [ 'Auto', 'Exact', 'Atleast' ],
 								onChange: (e) => onChangeUserData(e, 'truckWebsite'),
 								required: true,
-								id: 'row-heights4',
+								id: 'row-heights77',
 								value: updateUser.truckWebsite
 							}
 						}
 					: { showNothing: true },
-					{
-						label: 'Active Status:',
-						xsLabel: 1,
-						xsSize: 3,
-						component: Select,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Active', 'InActive' ],
-							onChange: (e) => onChangeUserData(e, 'activeStatus'),
-							required: true,
-							id: 'row-heights4',
-							value: updateUser.activeStatus
-						}
+				{
+					label: 'Active Status:',
+					xsLabel: 1,
+					xsSize: 3,
+					component: Select,
+					props: {
+						className: classes.inputclass,
+						data: [ 'Active', 'InActive' ],
+						onChange: (e) => onChangeUserData(e, 'activeStatus'),
+						required: true,
+						id: 'row-heights88',
+						value: updateUser.activeStatus
 					}
+				}
 			]
 		}
 	];
@@ -467,10 +558,10 @@ export default function Profile({ userData }) {
 						}
 					})}
 					<div style={{ marginTop: '40px', display: 'flex' }}>
-						<Button variant="outlined" onClick={(e) => updateVal(e, 'update')}>
+						<Button variant="outlined" onClick={submitData}>
 							Update
 						</Button>
-						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={()=>alert("User Deleted")}>
+						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={deleteUser}>
 							Delete
 						</Button>
 						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={updateVal}>
@@ -479,10 +570,32 @@ export default function Profile({ userData }) {
 					</div>
 				</React.Fragment>
 			)}
-		<Popup open={open} setOpen={setOpen} /> 	
+			<Popup open={open} handleClose={() => setOpen(false)}>
+				<MaterialTable
+					title={'Menu Data'}
+					style={{ marginTop: '4vh', color: 'black' }}
+					columns={tableColumn}
+					data={popupData}
+					// onRowClick={rowClickHander}
+					options={{
+						search: true,
+						pageSizeOptions: [ 5 ],
+						// searchFieldStyle: { color: 'white' },
+						rowStyle: (x) => {
+							return {
+								cursor: 'pointer',
+								'&:hover': {
+									// background: 'red'
+								}
+							};
+						}
+					}}
+				/>
+			</Popup>
 		</React.Fragment>
 	);
 }
+export default withRouter(Profile);
 {
 	/* <Grid item xs={12} style={{ display: 'flex'}}>
 {userData && userData.profilePhoto ? (

@@ -55,9 +55,17 @@ function HomePage(props) {
 					axios
 						.get('https://tyft-backend.herokuapp.com/api/Supplier/getalltruck')
 						.then(async (Response) => {
+							let copyData = [];
 							let Data = Response.data;
 							console.log(Data.TruckInfo);
-							setData(Data.TruckInfo); //
+							for (let i = 0; i < Data.TruckInfo.length; i++)
+								if (Data.TruckInfo[i].isDeleted === true){
+
+								} 
+								else 
+									copyData.push(Data.TruckInfo[i]);
+
+							setData(copyData); //
 							setIsLoading(false);
 							// navigation.navigate(Route.SIGNIN);
 						})
@@ -74,6 +82,12 @@ function HomePage(props) {
 							let newData = [];
 							if (Data) {
 								for (let i = 0; i < Data.length; i++) {
+									if (Data[i].isDeleted === true){
+
+									} 
+									else{
+
+									
 									if (Data[i].userType === 'Customer' && props.drawerPage === 'Customer') {
 										Data[i].created_at = convertDate(Data[i].created_at);
 										newData.push({ ...Data[i] });
@@ -82,6 +96,7 @@ function HomePage(props) {
 										newData.push({ ...Data[i] });
 									} else {
 									}
+								}
 								}
 								setData(newData); //
 								console.log(Data);
@@ -94,49 +109,49 @@ function HomePage(props) {
 							setIsLoading(false);
 						});
 				}
-			}
-			else{
+			} else {
 				setIsLoading(true);
 				axios
-				.get('https://tyft-backend.herokuapp.com/api/general/getradius')
-				.then(async (Response) => {
-					let Data = Response.data;
-					console.log(Data);
-					let miles = Data[0].MapRadius/1609.34;
+					.get('https://tyft-backend.herokuapp.com/api/general/getradius')
+					.then(async (Response) => {
+						let Data = Response.data;
+						console.log(Data);
+						let miles = Data[0].MapRadius / 1609.34;
 
-					//1609.34
-					setMapRadius(miles);
-					setIsLoading(false);
+						//1609.34
+						setMapRadius(miles);
+						setIsLoading(false);
 
-					// navigation.navigate(Route.SIGNIN);
-				})
-				.catch((error) => {
-					console.log("EOOROS IS",error);
-					setIsLoading(false);
-				});
+						// navigation.navigate(Route.SIGNIN);
+					})
+					.catch((error) => {
+						console.log('EOOROS IS', error);
+						setIsLoading(false);
+					});
 			}
 		},
 		[ props.drawerPage ]
 	);
-	const updateVal=()=>{
-		let miles = MapRadius*1609.34;
-		let data = [{
-			"_id": "5ff226cc961c9485c423d996",
-       		"MapRadius":miles
-		}];
+	const updateVal = () => {
+		let miles = MapRadius * 1609.34;
+		let data = [
+			{
+				_id: '5ff226cc961c9485c423d996',
+				MapRadius: miles
+			}
+		];
 		axios
 			.post('https://tyft-backend.herokuapp.com' + '/api/general/UpdateRadius', data)
 			.then(async (Response) => {
 				let responseMessage = await Response.data.code;
 				console.log(responseMessage);
 				if (responseMessage === 'ABT0000') alert('Updated');
-		
 			})
 			.catch((error) => {
 				console.log(error);
 				setLoader(false);
 			});
-	}
+	};
 	const getColumn = () => {
 		if (props.drawerPage === 'Customer' || props.drawerPage === 'Supplier')
 			return [
@@ -185,7 +200,7 @@ function HomePage(props) {
 						data: [ 'Auto', 'Exact', 'Atleast' ],
 						onChange: onChangeMapRadius,
 						required: true,
-						type:"number",
+						type: 'number',
 						id: 'row-heights',
 						value: MapRadius
 					}
