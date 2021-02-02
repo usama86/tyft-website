@@ -51,6 +51,7 @@ const ELXSelect = ({
 				IconComponent={showCustomIcon ? StyledExpandMoreSharpIcon : ArrowDropDownIcon}
 				onChange={onChange}
 				onBlur={handleBlur}
+				variant="outlined"
 				value={value}
 				style={style}
 				disabled={disabled}

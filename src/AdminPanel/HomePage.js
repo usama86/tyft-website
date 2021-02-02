@@ -13,6 +13,8 @@ import Label from './Ui/Label';
 import Button from '@material-ui/core/Button';
 import Popup from './Ui/Popup';
 import Select from './Ui/Select/ELXSelect';
+import HorizontalLabelPositionBelowStepper from './Ui/HorizontalStepper';
+import ServingCusine from './ServingCusine';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
@@ -44,9 +46,10 @@ function HomePage(props) {
 
 	const [ data, setData ] = React.useState([]);
 	const [ MapRadius, setMapRadius ] = React.useState(0);
-
+	const [open,setOpen] = React.useState(false);
 	const [ columnData, setColumnData ] = React.useState({});
 	const [ isLoading, setIsLoading ] = React.useState(true);
+	const [cusines,setCusines] = React.useState([]);
 	React.useEffect(
 		() => {
 			if (props.drawerPage !== 'Setting') {
@@ -73,7 +76,28 @@ function HomePage(props) {
 							console.log(error);
 							setIsLoading(false);
 						});
-				} else {
+				}
+				else if(props.drawerPage === 'Serving Cusine')
+				{
+					axios
+					.get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
+					.then(async (Response) => {
+						if (Response) {
+							if (Response.data.length > 0) {
+								let res = Response.data[0].cusine;
+						
+								setCusines(res);
+							}
+							// setIndicator(false);
+						} else {
+							// setIndicator(false);
+						}
+					})
+					.catch((error) => {
+						console.log(error);
+					});
+				}
+				else {
 					axios
 						.get('https://tyft-backend.herokuapp.com/api/users/getallusers')
 						.then(async (Response) => {
@@ -109,7 +133,8 @@ function HomePage(props) {
 							setIsLoading(false);
 						});
 				}
-			} else {
+			}
+			else {
 				setIsLoading(true);
 				axios
 					.get('https://tyft-backend.herokuapp.com/api/general/getradius')
@@ -226,6 +251,9 @@ function HomePage(props) {
 	};
 	return (
 		<React.Fragment>
+			{props.drawerPage === 'Serving Cusine' ? (
+				<ServingCusine {...props} cusines={cusines}/>
+			):
 			<ThemeProvider theme={theme}>
 				{isLoading ? (
 					<Skeleton
@@ -319,10 +347,14 @@ function HomePage(props) {
 								}
 							}}
 						/>
+						{props.drawerPage === 'Supplier' ? <Button style={{marginTop:'10px'}} onClick={()=>setOpen(true)}  variant="outlined">Add Supplier</Button>:null}
 					</React.Fragment>
 				)}
 			</ThemeProvider>
-			{/* <Popup open={open} setOpen={setOpen} columnData={columnData} /> */}
+				}
+			<Popup open={open} setOpen={setOpen}>
+				<HorizontalLabelPositionBelowStepper/>
+			</Popup>
 		</React.Fragment>
 	);
 }
