@@ -239,6 +239,8 @@ function HomePage(props) {
 		// setOpen(true);
 
 		let getName = '';
+		
+		localStorage.setItem('IDs',columns._id);
 		if (columns.profileName) getName = getName.replace(/\s/g, '');
 		else if (columns.truckName) getName = getName.replace(/\s/g, '');
 		columns.socialMedia = JSON.stringify(columns.socialMedia);
@@ -352,8 +354,8 @@ function HomePage(props) {
 				)}
 			</ThemeProvider>
 				}
-			<Popup open={open} setOpen={setOpen}>
-				<HorizontalLabelPositionBelowStepper/>
+			<Popup open={open} onClose = {()=>setOpen(false)}>
+				<HorizontalLabelPositionBelowStepper onClose = {()=>setOpen(false)}/>
 			</Popup>
 		</React.Fragment>
 	);

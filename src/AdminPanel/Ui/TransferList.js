@@ -10,7 +10,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import Checkbox from '@material-ui/core/Checkbox';
 import Button from '@material-ui/core/Button';
 import Divider from '@material-ui/core/Divider';
-import axios from 'axios';
 const useStyles = makeStyles((theme) => ({
 	root: {
 		margin: 'auto'
@@ -45,39 +44,10 @@ export default function TransferList(props) {
 	const classes = useStyles();
 	const [ checked, setChecked ] = React.useState([]);
 	const [ left, setLeft ] = React.useState(props.data);
-	const [ right, setRight ] = React.useState([]);
+	const [ right, setRight ] = React.useState(props.right);
 
 	const leftChecked = intersection(checked, left);
 	const rightChecked = intersection(checked, right);
-
-	React.useEffect(() => {
-		getCusine();
-	}, []);
-	const getCusine = async () => {
-		axios
-			.get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
-			.then(async (Response) => {
-				if (Response) {
-					if (Response.data.length > 0) {
-                        let res = Response.data[0].cusine;
-                        let result=[];
-                        for(let i =0 ; i <res.length;i++)
-                        {
-                            result.push(res[i].cusineName);
-                        }
-
-						console.log('Cusines', res);
-						setLeft(result);
-					}
-					// setIndicator(false);
-				} else {
-					// setIndicator(false);
-				}
-			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
 	const handleToggle = (value) => () => {
 		const currentIndex = checked.indexOf(value);
 		const newChecked = [ ...checked ];
@@ -103,6 +73,7 @@ export default function TransferList(props) {
 
 	const handleCheckedRight = () => {
 		setRight(right.concat(leftChecked));
+		props.getServingCusine(right.concat(leftChecked));
 		setLeft(not(left, leftChecked));
 		setChecked(not(checked, leftChecked));
 	};
@@ -110,6 +81,7 @@ export default function TransferList(props) {
 	const handleCheckedLeft = () => {
 		setLeft(left.concat(rightChecked));
 		setRight(not(right, rightChecked));
+		props.getServingCusine(not(right, rightChecked));
 		setChecked(not(checked, rightChecked));
 	};
 

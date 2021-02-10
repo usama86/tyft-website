@@ -14,21 +14,21 @@ export default function FormDialog(props) {
 
 	return (
 		<div>
-			<Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title">
+			<Dialog open={props.open} onClose={props.onClose} aria-labelledby="form-dialog-title">
 				<DialogTitle id="form-dialog-title">Update</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
 						{props.children}
 					</DialogContentText>
 				</DialogContent>
-				<DialogActions>
+				{/* <DialogActions> */}
 					{/* <Button onClick={props.handleClose} color="primary">
 						Cancel
 					</Button> */}
-					<Button onClick={props.handleClose} color="primary">
-						Okay
+					<Button onClick={props.onClose} color="primary">
+						Close
 					</Button>
-				</DialogActions>
+				{/* </DialogActions> */}
 			</Dialog>
 		</div>
 	);

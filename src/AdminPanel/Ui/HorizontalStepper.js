@@ -13,17 +13,171 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
 import TransferList from './TransferList';
-
 import Select from './Select/ELXSelect';
+import axios from 'axios';
+import AddIcon from '@material-ui/icons/Add';
+import List from './List';
 function getSteps() {
 	return [ 'Supplier Information', 'Truck Information', 'Business Hour', 'Serving Cusine', 'Menu' ];
 
 	//first info and logo  and Cover Photo
 	//Truck Info 'Social Media'
 }
+let indexes = 0;
+function getStepContent(stepIndex, date) {
+	React.useEffect(() => {
+		getCusine();
+	}, []);
+	const getCusine = async () => {
+		axios
+			.get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
+			.then(async (Response) => {
+				if (Response) {
+					if (Response.data.length > 0) {
+						let res = Response.data[0].cusine;
+						let result = [];
+						for (let i = 0; i < res.length; i++) {
+							result.push(res[i].cusineName);
+						}
 
-function getStepContent(stepIndex,date) {
+						console.log('Cusines', res);
+						setCusine(result);
+					}
+					// setIndicator(false);
+				} else {
+					// setIndicator(false);
+				}
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
 	const classes = useStyles();
+	const [ category, setCategory ] = React.useState([]);
+	const [ tempCategory, setTempCategory ] = React.useState([]);
+	const [ catArr, setcatArr ] = React.useState([
+		{
+			category: category[category.length - 1],
+			name: '',
+			price: '',
+			description: ''
+		}
+	]);
+	const [ updateUser, SetUpdateUser ] = React.useState({
+		name: null,
+		email: null,
+		Language: null,
+		isAdmin: null,
+		phoneNumber: null,
+		profileName: null,
+		password: null,
+		userType: null,
+		TruckID: null,
+		MenuID: null,
+		businessDesc: null,
+		categoryArray: null,
+		coverPhoto: null,
+		customerReview: null,
+		latitude: null,
+		longitude: null,
+		schedule: null,
+		selectedServingCusines: null,
+		facebook: null,
+		instagram: null,
+		twitter: null,
+		status: null,
+		truckCity: null,
+		truckContact: null,
+		truckEmail: null,
+		truckLogo: null,
+		truckName: null,
+		truckWebsite: null,
+		activeStatus: 'Active'
+	});
+	const [ resets, isResets ] = React.useState(false);
+	const [ cusine, setCusine ] = React.useState([]);
+	const [ cusines, setCusines ] = React.useState([]);
+	const [ week, setWeek ] = React.useState([
+		{
+			day: 'Monday',
+			working: false,
+			opening: '8:00 AM',
+			closing: '5:00 PM'
+		},
+		{
+			day: 'Tuesday',
+			working: false,
+			opening: '8:00 AM',
+			closing: '5:00 PM'
+		},
+		{
+			day: 'Wednesday',
+			working: false,
+			opening: '8:00 AM',
+			closing: '5:00 PM'
+		},
+		{
+			day: 'Thursday',
+			working: false,
+			opening: '8:00 AM',
+			closing: '5:00 PM'
+		},
+		{
+			day: 'Friday',
+			working: false,
+			opening: '8:00 AM',
+			closing: '5:00 PM'
+		},
+		{
+			day: 'Saturday',
+			working: false,
+			opening: '8:00 AM',
+			closing: '5:00 PM'
+		},
+		{
+			day: 'Sunday',
+			working: false,
+			opening: '8:00 AM',
+			closing: '5:00 PM'
+		}
+	]);
+	const onChangeUserData = (e, val) => {
+		updateUser[val] = e.target.value;
+		SetUpdateUser(updateUser);
+		// isReset(!reset);
+	};
+	const handleChange = (e, val) => {
+		let copyArr = week;
+		console.log(copyArr);
+		copyArr[val].working = !copyArr[val].working;
+		console.log(copyArr);
+		setWeek(copyArr);
+		isResets(!resets);
+	};
+	const getServingCusine = (data) => {
+		console.log(data);
+		setCusines(data);
+	};
+	const handleChangeTime = (e, timeType, Day, index) => {
+		let copyArr = week;
+		let hour = e.target.value;
+		let save = '';
+		hour = hour.split(':', 1)[0];
+		if (Number(hour) > 12) {
+			hour = hour - 12;
+			hour = hour + ':' + e.target.value.split(':', 2)[1] + ' PM';
+			save = hour;
+		} else save = e.target.value + ' AM';
+		copyArr[index][timeType] = save;
+		copyArr[index].day = Day;
+		setWeek(copyArr);
+		isResets(!resets);
+	};
+	const onChangeMenu = (e, name) => {
+		catArr[indexes][name] = e.target.value;
+		setcatArr(catArr);
+		isResets(!resets);
+	};
 	let expData = [
 		(stepIndex === 0 && {
 			heading: 'Rows',
@@ -35,10 +189,10 @@ function getStepContent(stepIndex,date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						// onChange: (e) => onChangeUserData(e, 'email'),
+						onChange: (e) => onChangeUserData(e, 'name'),
 						required: true,
 						id: 'row-heights0',
-						value: 'e'
+						value: updateUser.name
 					}
 				},
 				{
@@ -49,10 +203,10 @@ function getStepContent(stepIndex,date) {
 					props: {
 						className: classes.inputclass,
 						data: [ 'Auto', 'Exact', 'Atleast' ],
-						// onChange: (e) => onChangeUserData(e, 'email'),
+						onChange: (e) => onChangeUserData(e, 'email'),
 						required: true,
 						id: 'row-heights1',
-						value: 'e'
+						value: updateUser.email
 					}
 				},
 				{
@@ -63,10 +217,10 @@ function getStepContent(stepIndex,date) {
 					props: {
 						className: classes.inputclass,
 						data: [ 'Auto', 'Exact', 'Atleast' ],
-						// onChange: (e) => onChangeUserData(e, 'email'),
+						onChange: (e) => onChangeUserData(e, 'phoneNumber'),
 						required: true,
 						id: 'row-heights2',
-						value: 'e'
+						value: updateUser.phoneNumber
 					}
 				},
 				{
@@ -77,10 +231,10 @@ function getStepContent(stepIndex,date) {
 					props: {
 						className: classes.inputclass,
 						data: [ 'Auto', 'Exact', 'Atleast' ],
-						// onChange: (e) => onChangeUserData(e, 'email'),
+						onChange: (e) => onChangeUserData(e, 'password'),
 						required: true,
 						id: 'row-heights3',
-						value: 'e'
+						value: updateUser.password
 					}
 				},
 				{
@@ -91,10 +245,10 @@ function getStepContent(stepIndex,date) {
 					props: {
 						className: classes.inputclass,
 						data: [ 'Auto', 'Exact', 'Atleast' ],
-						// onChange: (e) => onChangeUserData(e, 'email'),
+						onChange: (e) => onChangeUserData(e, 'facebook'),
 						required: true,
 						id: 'row-heights3',
-						value: 'e'
+						value: updateUser.facebook
 					}
 				},
 				{
@@ -105,10 +259,10 @@ function getStepContent(stepIndex,date) {
 					props: {
 						className: classes.inputclass,
 						data: [ 'Auto', 'Exact', 'Atleast' ],
-						// onChange: (e) => onChangeUserData(e, 'email'),
+						onChange: (e) => onChangeUserData(e, 'instagram'),
 						required: true,
 						id: 'row-heights3',
-						value: 'e'
+						value: updateUser.instagram
 					}
 				},
 				{
@@ -119,12 +273,12 @@ function getStepContent(stepIndex,date) {
 					props: {
 						className: classes.inputclass,
 						data: [ 'Auto', 'Exact', 'Atleast' ],
-						// onChange: (e) => onChangeUserData(e, 'email'),
+						onChange: (e) => onChangeUserData(e, 'twitter'),
 						required: true,
 						id: 'row-heights3',
-						value: 'e'
+						value: updateUser.twitter
 					}
-				},
+				}
 			]
 		}) ||
 			(stepIndex === 1 && {
@@ -138,10 +292,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeUserData(e, 'truckName'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: updateUser.truckName
 						}
 					},
 					{
@@ -152,10 +306,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeUserData(e, 'businessDesc'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: updateUser.businessDesc
 						}
 					},
 					{
@@ -166,10 +320,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeUserData(e, 'truckContact'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: updateUser.truckContact
 						}
 					},
 					{
@@ -180,10 +334,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeUserData(e, 'truckEmail'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: updateUser.truckEmail
 						}
 					},
 					{
@@ -194,10 +348,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeUserData(e, 'truckCity'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: updateUser.truckCity
 						}
 					},
 					{
@@ -208,10 +362,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeUserData(e, 'truckWebsite'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: updateUser.truckWebsite
 						}
 					}
 				]
@@ -222,36 +376,19 @@ function getStepContent(stepIndex,date) {
 					{
 						xsSize: 4,
 						component: FormControlLabel,
-						props:{
-							control:(
-								<Checkbox
-								  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-								  checkedIcon={<CheckBoxIcon fontSize="small" />}
-								  name="checkedI"
-								/>
-								),
-							  label:"Monday",
-							  paddingTop:'21px'
-						},
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
-							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							control: (
+								<Checkbox
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
+									name="checkedI"
+									checked={week[0].working}
+									onChange={() => handleChange('Monday', 0)}
+									onC
+								/>
+							),
+							label: 'Monday',
+							paddingTop: '21px'
 						}
 					},
 					{
@@ -260,53 +397,59 @@ function getStepContent(stepIndex,date) {
 						xsSize: 4,
 						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							// defaultValue: '08:00AM',
+							className: classes.textField,
+							onChange: (e) => handleChangeTime(e, 'opening', 'Monday', 0),
+							disabled: !week[0].working,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
-							inputProps:{
-							  step: 300, // 5 min
+							inputProps: {
+								step: 300 // 5 min
+							}
+						}
+					},
+					{
+						// label: 'Name:',
+						// xsLabel: 1,
+						xsSize: 4,
+						component: TextField,
+						props: {
+							id: 'time',
+							label: 'Alarm clock1',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'closing', 'Monday', 0),
+							disabled: !week[0].working,
+							// defaultValue: '05:00PM',
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
+							inputProps: {
+								step: 300 // 5 min
+							}
 						}
 					},
 					{
 						xsSize: 4,
 						component: FormControlLabel,
-						props:{
-							control:(
-								<Checkbox
-								  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-								  checkedIcon={<CheckBoxIcon fontSize="small" />}
-								  name="checkedI"
-								/>
-								),
-							  label:"Tuesday",
-							  paddingTop:'21px'
-						},
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
-							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							control: (
+								<Checkbox
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
+									name="checkedI"
+									checked={week[1].working}
+									onChange={() => handleChange('Tuesday', 1)}
+								/>
+							),
+							label: 'Tuesday',
+							paddingTop: '21px'
 						}
 					},
 					{
@@ -315,53 +458,57 @@ function getStepContent(stepIndex,date) {
 						xsSize: 4,
 						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'opening', 'Tuesday', 1),
+							disabled: !week[1].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
-							inputProps:{
-							  step: 300, // 5 min
+							inputProps: {
+								step: 300 // 5 min
+							}
+						}
+					},
+					{
+						// label: 'Name:',
+						// xsLabel: 1,
+						xsSize: 4,
+						component: TextField,
+						props: {
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'closing', 'Tuesday', 1),
+							disabled: !week[1].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
+							inputProps: {
+								step: 300 // 5 min
+							}
 						}
 					},
 					{
 						xsSize: 4,
 						component: FormControlLabel,
-						props:{
-							control:(
-								<Checkbox
-								  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-								  checkedIcon={<CheckBoxIcon fontSize="small" />}
-								  name="checkedI"
-								/>
-								),
-							  label:"Wednesday",
-							  paddingTop:'21px'
-						},
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
-							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							control: (
+								<Checkbox
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
+									name="checkedI"
+									checked={week[2].working}
+									onChange={() => handleChange('Wednesday', 2)}
+								/>
+							),
+							label: 'Wednesday',
+							paddingTop: '21px'
 						}
 					},
 					{
@@ -370,53 +517,57 @@ function getStepContent(stepIndex,date) {
 						xsSize: 4,
 						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'opening', 'Wednesday', 2),
+							disabled: !week[2].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
-							inputProps:{
-							  step: 300, // 5 min
+							inputProps: {
+								step: 300 // 5 min
+							}
+						}
+					},
+					{
+						// label: 'Name:',
+						// xsLabel: 1,
+						xsSize: 4,
+						component: TextField,
+						props: {
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'closing', 'Wednesday', 2),
+							disabled: !week[2].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
+							inputProps: {
+								step: 300 // 5 min
+							}
 						}
 					},
 					{
 						xsSize: 4,
 						component: FormControlLabel,
-						props:{
-							control:(
-								<Checkbox
-								  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-								  checkedIcon={<CheckBoxIcon fontSize="small" />}
-								  name="checkedI"
-								/>
-								),
-							  label:"Thursday",
-							  paddingTop:'21px'
-						},
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
-							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							control: (
+								<Checkbox
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
+									name="checkedI"
+									checked={week[3].working}
+									onChange={() => handleChange('Thursday', 3)}
+								/>
+							),
+							label: 'Thursday',
+							paddingTop: '21px'
 						}
 					},
 					{
@@ -425,53 +576,57 @@ function getStepContent(stepIndex,date) {
 						xsSize: 4,
 						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'opening', 'Thursday', 3),
+							disabled: !week[3].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
-							inputProps:{
-							  step: 300, // 5 min
+							inputProps: {
+								step: 300 // 5 min
+							}
+						}
+					},
+					{
+						// label: 'Name:',
+						// xsLabel: 1,
+						xsSize: 4,
+						component: TextField,
+						props: {
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'closing', 'Thursday', 3),
+							disabled: !week[3].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
+							inputProps: {
+								step: 300 // 5 min
+							}
 						}
 					},
 					{
 						xsSize: 4,
 						component: FormControlLabel,
-						props:{
-							control:(
-								<Checkbox
-								  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-								  checkedIcon={<CheckBoxIcon fontSize="small" />}
-								  name="checkedI"
-								/>
-								),
-							  label:"Friday",
-							  paddingTop:'21px'
-						},
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
-							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							control: (
+								<Checkbox
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
+									name="checkedI"
+									checked={week[4].working}
+									onChange={() => handleChange('Friday', 4)}
+								/>
+							),
+							label: 'Friday',
+							paddingTop: '21px'
 						}
 					},
 					{
@@ -480,53 +635,57 @@ function getStepContent(stepIndex,date) {
 						xsSize: 4,
 						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'opening', 'Friday', 4),
+							disabled: !week[4].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
-							inputProps:{
-							  step: 300, // 5 min
+							inputProps: {
+								step: 300 // 5 min
+							}
+						}
+					},
+					{
+						// label: 'Name:',
+						// xsLabel: 1,
+						xsSize: 4,
+						component: TextField,
+						props: {
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'closing', 'Friday', 4),
+							disabled: !week[4].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
+							inputProps: {
+								step: 300 // 5 min
+							}
 						}
 					},
 					{
 						xsSize: 4,
 						component: FormControlLabel,
-						props:{
-							control:(
-								<Checkbox
-								  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-								  checkedIcon={<CheckBoxIcon fontSize="small" />}
-								  name="checkedI"
-								/>
-								),
-							  label:"Saturday",
-							  paddingTop:'21px'
-						},
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
-							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							control: (
+								<Checkbox
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
+									name="checkedI"
+									checked={week[5].working}
+									onChange={() => handleChange('Saturday', 5)}
+								/>
+							),
+							label: 'Saturday',
+							paddingTop: '21px'
 						}
 					},
 					{
@@ -535,53 +694,57 @@ function getStepContent(stepIndex,date) {
 						xsSize: 4,
 						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'opening', 'Saturday', 5),
+							disabled: !week[5].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
-							inputProps:{
-							  step: 300, // 5 min
+							inputProps: {
+								step: 300 // 5 min
+							}
+						}
+					},
+					{
+						// label: 'Name:',
+						// xsLabel: 1,
+						xsSize: 4,
+						component: TextField,
+						props: {
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'closing', 'Saturday', 5),
+							disabled: !week[5].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
+							inputProps: {
+								step: 300 // 5 min
+							}
 						}
 					},
 					{
 						xsSize: 4,
 						component: FormControlLabel,
-						props:{
-							control:(
+						props: {
+							control: (
 								<Checkbox
-								  icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-								  checkedIcon={<CheckBoxIcon fontSize="small" />}
-								  name="checkedI"
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
+									name="checkedI"
+									checked={week[6].working}
+									onChange={() => handleChange('Sunday', 6)}
 								/>
-								),
-							  label:"Sunday",
-							  paddingTop:'21px'
-						},
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
-							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							),
+							label: 'Sunday',
+							paddingTop: '21px'
 						}
 					},
 					{
@@ -590,21 +753,42 @@ function getStepContent(stepIndex,date) {
 						xsSize: 4,
 						component: TextField,
 						props: {
-							id:"time",
-							label:"Alarm clock",
-							type:"time",
-							defaultValue:"07:30",
-							className:classes.textField,
-							variants:true,
-							InputLabelProps:{
-							  shrink: true,
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'opening', 'Sunday', 6),
+							disabled: !week[6].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
 							},
-							inputProps:{
-							  step: 300, // 5 min
-							},
+							inputProps: {
+								step: 300 // 5 min
+							}
 						}
 					},
-					
+					{
+						// label: 'Name:',
+						// xsLabel: 1,
+						xsSize: 4,
+						component: TextField,
+						props: {
+							id: 'time',
+							label: 'Alarm clock',
+							type: 'time',
+							onChange: (e) => handleChangeTime(e, 'closing', 'Sunday', 6),
+							disabled: !week[6].working,
+							className: classes.textField,
+							variants: true,
+							InputLabelProps: {
+								shrink: true
+							},
+							inputProps: {
+								step: 300 // 5 min
+							}
+						}
+					}
 				]
 			}) ||
 			(stepIndex === 3 && {
@@ -616,8 +800,10 @@ function getStepContent(stepIndex,date) {
 						component: TransferList,
 						props: {
 							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							data: cusine,
+							right: cusines,
+							// getServingCusine: getServingCusine,
+							getServingCusine: getServingCusine,
 							required: true,
 							id: 'row-heights0',
 							value: 'e'
@@ -631,15 +817,37 @@ function getStepContent(stepIndex,date) {
 					{
 						label: 'Add Category:',
 						xsLabel: 6,
-						xsSize: 6,
+						xsSize: 4,
 						component: TextField,
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => setTempCategory(e.target.value),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: tempCategory
+						}
+					},
+					{
+						xsSize: 2,
+						component: AddIcon,
+						alignItem: 'center',
+						props: {
+							onClick: () => {
+								category.push(tempCategory);
+								setCategory(category);
+								setTempCategory('');
+								isResets(!resets);
+							},
+							style: {
+								cursor: 'pointer'
+							},
+							// rootClass: classes.smallWidth,
+							// data: category,
+							// // onChange: (e) => onChangeUserData(e, 'email'),
+							// required: true,
+							id: 'row-heights03'
+							// value: 'e',
 						}
 					},
 					{
@@ -648,14 +856,15 @@ function getStepContent(stepIndex,date) {
 						xsSize: 6,
 						component: Select,
 						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							rootClass: classes.smallWidth,
+							data: category,
+							onChange: (e) => onChangeMenu(e, 'category'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: catArr[indexes].category
 						}
 					},
+
 					{
 						label: 'Name:',
 						xsLabel: 6,
@@ -664,10 +873,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeMenu(e, 'name'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: catArr[indexes].name
 						}
 					},
 					{
@@ -678,10 +887,10 @@ function getStepContent(stepIndex,date) {
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeMenu(e, 'description'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: catArr[indexes].description
 						}
 					},
 					{
@@ -691,26 +900,49 @@ function getStepContent(stepIndex,date) {
 						component: TextField,
 						props: {
 							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							// onChange: (e) => onChangeUserData(e, 'email'),
+							onChange: (e) => onChangeMenu(e, 'price'),
 							required: true,
 							id: 'row-heights0',
-							value: 'e'
+							value: catArr[indexes].price
 						}
 					},
 					{
-						xsSize: 6,
+						xsSize: 12,
 						component: Button,
 						props: {
 							className: classes.inputclass,
 							data: [ 'Auto', 'Exact', 'Atleast' ],
+							onClick: () => {
+								indexes += 1;
+								console.log(catArr);
+								let copycat = [
+									...catArr,
+									{
+										category: category[category.length - 1],
+										name: '',
+										price: '',
+										description: ''
+									}
+								];
+								console.log(copycat);
+								setcatArr(copycat);
+								isResets(!resets);
+							},
+							style: { background: 'grey' },
 							// onChange: (e) => onChangeUserData(e, 'email'),
 							required: true,
 							id: 'row-heights0',
 							value: 'e',
-							children:"Add to List"
+							children: 'Add to List'
 						}
 					},
+					{
+						xsSize: 12,
+						component: List,
+						props: {
+							data: catArr
+						}
+					}
 				]
 			})
 	];
@@ -745,7 +977,11 @@ function getStepContent(stepIndex,date) {
 											<Grid
 												item
 												xs={control.xsSize}
-												style={{ justifyContent: control.justifyComponent,paddingTop:control.paddingTop }}
+												style={{
+													justifyContent: control.justifyComponent,
+													paddingTop: control.paddingTop,
+													alignSelf: control.alignItem
+												}}
 											>
 												<control.component {...control.props} />
 											</Grid>
@@ -761,14 +997,21 @@ function getStepContent(stepIndex,date) {
 	);
 }
 
-export default function HorizontalLabelPositionBelowStepper() {
+export default function HorizontalLabelPositionBelowStepper(props) {
 	const classes = useStyles();
 	const [ activeStep, setActiveStep ] = React.useState(0);
-	const [date, setDate] = React.useState(new Date());
+	const [ date, setDate ] = React.useState(new Date());
 	const steps = getSteps();
 
-	const handleNext = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep + 1);
+	const handleNext = (active,step) => {
+		console.log(active);
+		console.log(step);
+		if (active===4)
+		{
+			props.onClose();
+			setActiveStep(1);
+		} 
+		else setActiveStep((prevActiveStep) => prevActiveStep + 1);
 	};
 
 	const handleBack = () => {
@@ -796,12 +1039,16 @@ export default function HorizontalLabelPositionBelowStepper() {
 					</div>
 				) : (
 					<div>
-						<Typography className={classes.instructions}>{getStepContent(activeStep,date)}</Typography>
+						<Typography className={classes.instructions}>{getStepContent(activeStep, date)}</Typography>
 						<div>
 							<Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
 								Back
 							</Button>
-							<Button variant="contained" color="primary" onClick={handleNext}>
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={()=>handleNext(activeStep,steps)}
+							>
 								{activeStep === steps.length - 1 ? 'Finish' : 'Next'}
 							</Button>
 						</div>
