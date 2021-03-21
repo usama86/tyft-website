@@ -6,7 +6,7 @@ import axios from 'axios';
 
 import TransferList from './TransferList';
 //need to fix User Cusine
-
+let count=0;
 export default function MenuFunction(props) {
 	const classes = useStyles();
 	const [ resets, isResets ] = React.useState(false);
@@ -20,6 +20,68 @@ export default function MenuFunction(props) {
 		setCusines(data);
 	};
 	const getCusine = async () => {
+		if(props.TruckID)
+		{
+			let TruckId = props.TruckID;
+			count=0;
+			axios
+			  .get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
+			  .then(async Response => {
+				if (Response) {
+				  if (Response.data.length > 0) {
+					let AllCusines = Response.data[0].cusine;
+					axios
+					  .post('https://tyft-backend.herokuapp.com/api/supplier/getservingcusine', {
+						_id: TruckId,
+					  })
+					  .then(async Response => {
+						if (Response) {
+						  if (Response.data.length > 0) {
+							let res = Response.data;
+							console.log('Selected Cusines', res);
+							// setData(res);
+							res.map(a => {
+							  AllCusines.map(b => {
+								if (a.cusineName === b.cusineName && a.checked) {
+								  b.checked = true;
+								  count=count + 1;
+								  console.log(count);
+								}
+								
+							  });
+							  let result = [];
+							  for (let i = 0; i < AllCusines.length; i++) {
+									result.push(AllCusines[i].cusineName);
+								}
+							  setCusine(result);
+                        		isResets(!resets)
+							//   setData(AllCusines);
+							});
+						  } else {
+							setCusine(null);
+							// setData(null);
+						  }
+						//   setIndicator(false);
+						} else {
+						//   setIndicator(false);
+						}
+					  })
+					  .catch(error => {
+						console.log(error);
+						// setIndicator(false);
+					  });
+		
+					// console.log('All Cusines after update', AllCusines);
+					console.log('count is',count);
+					// setData(AllCusines);
+				  }
+				}
+			  })
+			  .catch(error => {
+				console.log(error);
+			  });
+		}
+		else{
 		axios
 			.get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
 			.then(async (Response) => {
@@ -43,6 +105,7 @@ export default function MenuFunction(props) {
 			.catch((error) => {
 				console.log(error);
 			});
+		}
 	};
 	let expData = [
 		{

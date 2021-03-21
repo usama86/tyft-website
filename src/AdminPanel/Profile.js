@@ -12,6 +12,8 @@ import MaterialTable from 'material-table';
 import { withRouter } from 'next/router';
 import MenuFunction from './Ui/Menu';
 import Cusine from './Ui/ServingCusine';
+import BusinessHour from './Ui/BusinessHour';
+
 const useStyles = makeStyles((theme) => ({
 	root: {
 		'& .MuiTextField-root': {
@@ -59,7 +61,7 @@ function Profile({ userData,...props }) {
 	const [ open, setOpen ] = React.useState(false);
 	const [ openMenu, setOpenMenu ] = React.useState(false);
 	const [ openCusine, setOpenCusine ] = React.useState(false);
-	
+	const [openHour, setOpenHour] = React.useState(false);
 	
 	const [ popupData, setPopupData ] = React.useState([]);
 	const [ tableColumn, setTableColumn ] = React.useState([
@@ -579,12 +581,12 @@ function Profile({ userData,...props }) {
 						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={()=>setOpenMenu(true)}>
 							Menu
 						</Button>
-						<Button variant="outlined" style={{ marginLeft: '10px' }} >
+						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={()=>setOpenHour(true)} >
 							Schedule
 						</Button>
-						<Button variant="outlined" style={{ marginLeft: '10px' }}>
+						{/* <Button variant="outlined" style={{ marginLeft: '10px' }}>
 							Categories
-						</Button>
+						</Button> */}
 					</div>
 				</React.Fragment>
 			)}
@@ -614,7 +616,10 @@ function Profile({ userData,...props }) {
 				<MenuFunction menuID={userData.MenuID}/>
 			</Popup>
 			<Popup open={openCusine} onClose = {()=>setOpenCusine(false)}>
-				<Cusine/>
+				<Cusine TruckID={userData._id}/>
+			</Popup>
+			<Popup open={openHour} onClose = {()=>setOpenHour(false)}>
+				<BusinessHour TruckID={userData._id}/>
 			</Popup>
 			
 		</React.Fragment>

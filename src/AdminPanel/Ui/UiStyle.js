@@ -22,13 +22,14 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: 'center',
 		//fontSize: '12px !important',
 		//color: '#666666 !important',
-		height: '56px !important',
+		// height: '56px !important',
 		// fontFamily: 'Noto Sans',
 		textOverflow: 'ellipsis ',
 		'&:focus': {
 		  backgroundColor: '#FFFFFF',
 		},
-		width:'165px !important'
+		width:'165px !important',
+		height:'50px'
 	},
     root: {
 		width: '100%'

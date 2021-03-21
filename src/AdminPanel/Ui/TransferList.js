@@ -46,8 +46,16 @@ export default function TransferList(props) {
 	const [ left, setLeft ] = React.useState(props.data);
 	const [ right, setRight ] = React.useState(props.right);
 
+
 	const leftChecked = intersection(checked, left);
 	const rightChecked = intersection(checked, right);
+	
+	React.useEffect(()=>{
+		setLeft(props.data);
+	},[props.data])
+	React.useEffect(()=>{
+		setRight(props.right);
+	},[props.right])
 	const handleToggle = (value) => () => {
 		const currentIndex = checked.indexOf(value);
 		const newChecked = [ ...checked ];
