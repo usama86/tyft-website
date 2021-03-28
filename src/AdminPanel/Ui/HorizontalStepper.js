@@ -160,7 +160,7 @@ function getStepContent(stepIndex, date) {
 		// isReset(!reset);
 	};
 
-	const checkStateUpdateUser = (query) => {
+	const checkState = (query) => {
 		if (updateUser[query] == null) {
 			return ''
 		} else return updateUser[query]
@@ -168,26 +168,26 @@ function getStepContent(stepIndex, date) {
 
 	const saveData = () => {
 		let data = {
-			email: checkStateUpdateUser('email'),
-			password: checkStateUpdateUser('password'),
-			profileName: checkStateUpdateUser('profileName'),
-			truckLogo: checkStateUpdateUser('truckLogo'),
-			coverPhoto: checkStateUpdateUser('coverPhoto'), //img
-			phoneNumber: checkStateUpdateUser('phoneNumber'),
+			email: (updateUser.email) ? updateUser.email : '',
+			password: (updateUser.password) ? updateUser.password : '',
+			profileName: (updateUser.profileName) ? updateUser.profileName : '',
+			truckLogo: (updateUser.truckLogo) ? updateUser.truckLogo : '',
+			coverPhoto: (updateUser.coverPhoto) ? updateUser.coverPhoto : '', //img
+			phoneNumber: (updateUser.phoneNumber) ? updateUser.phoneNumber : '',
 			userType: 'Supplier',
-			truckName: checkStateUpdateUser('truckName'),
-			businessDesc: checkStateUpdateUser('businessDesc'),
-			truckContact: checkStateUpdateUser('truckContact'),
-			truckEmail: checkStateUpdateUser('truckEmail'),
-			truckCity: checkStateUpdateUser('truckCity'),
-			truckWebsite: checkStateUpdateUser('truckWebsite'),
-			schedule: checkStateUpdateUser('schedule'),
-			facebook: checkStateUpdateUser('facebook'),
-			instagram: checkStateUpdateUser('instagram'),
-			twitter: checkStateUpdateUser('twitter'),
-			selectedServingCusines: checkStateUpdateUser('selectedServingCusines'),
-			Menu: checkStateUpdateUser('Menu'),
-			categoryArray: checkStateUpdateUser('categoryArray'),
+			truckName: (updateUser.truckName) ? updateUser.truckName : '',
+			businessDesc: (updateUser.bussinessDesc) ? updateUser.bussinessDesc : '',
+			truckContact: (updateUser.truckContact) ? updateUser.truckContact : '',
+			truckEmail: (updateUser.truckEmail) ? updateUser.truckEmail : '',
+			truckCity: (updateUser.truckCity) ? updateUser.truckCity : '',
+			truckWebsite: (updateUser.Website) ? updateUser.Website : '',
+			schedule: week,
+			facebook: (updateUser.facebook) ? updateUser.facebook : '',
+			instagram: (updateUser.instagram) ? updateUser.instagram : '',
+			twitter: (updateUser.twitter) ? updateUser.twitter : '',
+			selectedServingCusines: cusines,
+			Menu: menuArr,
+			categoryArray: category,
 		}
 
 		console.log('exporting the data', data)
@@ -257,6 +257,9 @@ function getStepContent(stepIndex, date) {
 		setMenuArr(menuArr);
 		isResets(!resets);
 	};
+	const update = () => {
+		return true
+	}
 	let expData = [
 		(stepIndex === 0 && {
 			heading: 'Rows',
@@ -271,7 +274,7 @@ function getStepContent(stepIndex, date) {
 						onChange: (e) => onChangeUserData(e, 'name'),
 						required: true,
 						id: 'row-heights0',
-						value: updateUser.name
+						value: updateUser.name,
 					}
 				},
 				{
@@ -279,13 +282,15 @@ function getStepContent(stepIndex, date) {
 					xsLabel: 6,
 					xsSize: 6,
 					component: TextField,
+
 					props: {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'email'),
 						required: true,
 						id: 'row-heights1',
-						value: updateUser.email
+						value: updateUser.email,
+
 					}
 				},
 				{
@@ -326,7 +331,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'facebook'),
 						required: true,
-						id: 'row-heights3',
+						id: 'row-heights4',
 						value: updateUser.facebook
 					}
 				},
@@ -340,7 +345,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'instagram'),
 						required: true,
-						id: 'row-heights3',
+						id: 'row-heights5',
 						value: updateUser.instagram
 					}
 				},
@@ -354,7 +359,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'twitter'),
 						required: true,
-						id: 'row-heights3',
+						id: 'row-heights6',
 						value: updateUser.twitter
 					}
 				}
@@ -373,8 +378,9 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'truckName'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights7',
 						value: updateUser.truckName
+
 					}
 				},
 				{
@@ -387,7 +393,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'businessDesc'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights8',
 						value: updateUser.businessDesc
 					}
 				},
@@ -401,7 +407,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'truckContact'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights9',
 						value: updateUser.truckContact
 					}
 				},
@@ -415,7 +421,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'truckEmail'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights10',
 						value: updateUser.truckEmail
 					}
 				},
@@ -429,7 +435,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'truckCity'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights11',
 						value: updateUser.truckCity
 					}
 				},
@@ -443,7 +449,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'truckWebsite'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights12',
 						value: updateUser.truckWebsite
 					}
 				}
@@ -884,7 +890,7 @@ function getStepContent(stepIndex, date) {
 						// getServingCusine: getServingCusine,
 						getServingCusine: getServingCusine,
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights13',
 						value: 'e'
 					}
 				}
@@ -903,7 +909,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => setTempCategory(e.target.value),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights14',
 						value: tempCategory
 					}
 				},
@@ -925,7 +931,7 @@ function getStepContent(stepIndex, date) {
 						// data: category,
 						// // onChange: (e) => onChangeUserData(e, 'email'),
 						// required: true,
-						id: 'row-heights03'
+						id: 'row-heights15'
 						// value: 'e',
 					}
 				},
@@ -939,7 +945,7 @@ function getStepContent(stepIndex, date) {
 						data: category,
 						onChange: (e) => onChangeMenu(e, 'category'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights16',
 						value: menuArr[indexes].category
 					}
 				},
@@ -954,7 +960,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeMenu(e, 'name'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights17',
 						value: menuArr[indexes].name
 					}
 				},
@@ -968,7 +974,7 @@ function getStepContent(stepIndex, date) {
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeMenu(e, 'description'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights18',
 						value: menuArr[indexes].description
 					}
 				},
@@ -981,7 +987,7 @@ function getStepContent(stepIndex, date) {
 						className: classes.inputclass,
 						onChange: (e) => onChangeMenu(e, 'price'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights19',
 						value: menuArr[indexes].price
 					}
 				},
@@ -1010,7 +1016,7 @@ function getStepContent(stepIndex, date) {
 						style: { background: 'grey' },
 						// onChange: (e) => onChangeUserData(e, 'email'),
 						required: true,
-						id: 'row-heights0',
+						id: 'row-heights20',
 						value: 'e',
 						children: 'Add to List'
 					}
