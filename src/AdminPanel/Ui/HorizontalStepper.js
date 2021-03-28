@@ -55,7 +55,7 @@ function getStepContent(stepIndex, date) {
 	const classes = useStyles();
 	const [ category, setCategory ] = React.useState([]);
 	const [ tempCategory, setTempCategory ] = React.useState([]);
-	const [ catArr, setcatArr ] = React.useState([
+	const [ menuArr, setMenuArr ] = React.useState([
 		{
 			category: category[category.length - 1],
 			name: '',
@@ -146,6 +146,10 @@ function getStepContent(stepIndex, date) {
 		SetUpdateUser(updateUser);
 		// isReset(!reset);
 	};
+	const saveData =()=>{
+		//console.log('')
+		//api call
+	}
 	const handleChange = (e, val) => {
 		let copyArr = week;
 		console.log(copyArr);
@@ -174,8 +178,8 @@ function getStepContent(stepIndex, date) {
 		isResets(!resets);
 	};
 	const onChangeMenu = (e, name) => {
-		catArr[indexes][name] = e.target.value;
-		setcatArr(catArr);
+		menuArr[indexes][name] = e.target.value;
+		setMenuArr(menuArr);
 		isResets(!resets);
 	};
 	let expData = [
@@ -371,7 +375,7 @@ function getStepContent(stepIndex, date) {
 				]
 			}) ||
 			(stepIndex === 2 && {
-				heading: 'Date',
+				heading: 'Business Hour',
 				controls: [
 					{
 						xsSize: 4,
@@ -861,7 +865,7 @@ function getStepContent(stepIndex, date) {
 							onChange: (e) => onChangeMenu(e, 'category'),
 							required: true,
 							id: 'row-heights0',
-							value: catArr[indexes].category
+							value: menuArr[indexes].category
 						}
 					},
 
@@ -876,7 +880,7 @@ function getStepContent(stepIndex, date) {
 							onChange: (e) => onChangeMenu(e, 'name'),
 							required: true,
 							id: 'row-heights0',
-							value: catArr[indexes].name
+							value: menuArr[indexes].name
 						}
 					},
 					{
@@ -890,7 +894,7 @@ function getStepContent(stepIndex, date) {
 							onChange: (e) => onChangeMenu(e, 'description'),
 							required: true,
 							id: 'row-heights0',
-							value: catArr[indexes].description
+							value: menuArr[indexes].description
 						}
 					},
 					{
@@ -903,7 +907,7 @@ function getStepContent(stepIndex, date) {
 							onChange: (e) => onChangeMenu(e, 'price'),
 							required: true,
 							id: 'row-heights0',
-							value: catArr[indexes].price
+							value: menuArr[indexes].price
 						}
 					},
 					{
@@ -914,9 +918,9 @@ function getStepContent(stepIndex, date) {
 							data: [ 'Auto', 'Exact', 'Atleast' ],
 							onClick: () => {
 								indexes += 1;
-								console.log(catArr);
+								console.log(menuArr);
 								let copycat = [
-									...catArr,
+									...menuArr,
 									{
 										category: category[category.length - 1],
 										name: '',
@@ -925,7 +929,7 @@ function getStepContent(stepIndex, date) {
 									}
 								];
 								console.log(copycat);
-								setcatArr(copycat);
+								setMenuArr(copycat);
 								isResets(!resets);
 							},
 							style: { background: 'grey' },
@@ -940,7 +944,7 @@ function getStepContent(stepIndex, date) {
 						xsSize: 12,
 						component: List,
 						props: {
-							data: catArr
+							data: menuArr
 						}
 					}
 				]
@@ -993,6 +997,9 @@ function getStepContent(stepIndex, date) {
 					);
 				}
 			})}
+				<Button onClick={saveData}>
+					Save Supplier
+				</Button>
 		</React.Fragment>
 	);
 }
@@ -1008,6 +1015,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		console.log(step);
 		if (active===4)
 		{
+			
 			props.onClose();
 			setActiveStep(1);
 		} 
