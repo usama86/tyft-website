@@ -17,6 +17,8 @@ import Select from './Select/ELXSelect';
 import axios from 'axios';
 import AddIcon from '@material-ui/icons/Add';
 import List from './List';
+
+let cusineTemp = [];
 function getSteps() {
 	return ['Supplier Information', 'Truck Information', 'Business Hour', 'Serving Cusine', 'Menu'];
 
@@ -39,7 +41,7 @@ function getStepContent(stepIndex, date) {
 						for (let i = 0; i < res.length; i++) {
 							result.push(res[i].cusineName);
 						}
-
+						cusineTemp = res;
 						console.log('Cusines', res);
 						setCusine(result);
 					}
@@ -166,7 +168,24 @@ function getStepContent(stepIndex, date) {
 		} else return updateUser[query]
 	}
 
-	const saveData = () => {
+	const saveData = () => {  //[1,2,3]  len 3    c=0 1  c=1 3          2
+		let count=0;
+		for(let i=0;i<cusineTemp.length;i++)
+		{
+			if(cusineTemp[i].cusineName===cusines[count])
+			{
+				cusineTemp[i].checked=true;
+				i=0;
+				count++;
+				if(count===cusines.length)
+					break;
+			}
+		}
+
+		console.log(cusineTemp)
+		/// khelo ()
+		// cusine(start)  cusineName:'ss', checked:'true' 
+		//cusines(right)(names)
 		let data = {
 			email: (updateUser.email) ? updateUser.email : '',
 			password: (updateUser.password) ? updateUser.password : '',
@@ -185,7 +204,7 @@ function getStepContent(stepIndex, date) {
 			facebook: (updateUser.facebook) ? updateUser.facebook : '',
 			instagram: (updateUser.instagram) ? updateUser.instagram : '',
 			twitter: (updateUser.twitter) ? updateUser.twitter : '',
-			selectedServingCusines: cusines,
+			selectedServingCusines: cusineTemp,
 			Menu: menuArr,
 			categoryArray: category,
 		}
