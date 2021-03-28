@@ -18,7 +18,7 @@ import axios from 'axios';
 import AddIcon from '@material-ui/icons/Add';
 import List from './List';
 function getSteps() {
-	return [ 'Supplier Information', 'Truck Information', 'Business Hour', 'Serving Cusine', 'Menu' ];
+	return ['Supplier Information', 'Truck Information', 'Business Hour', 'Serving Cusine', 'Menu'];
 
 	//first info and logo  and Cover Photo
 	//Truck Info 'Social Media'
@@ -52,10 +52,14 @@ function getStepContent(stepIndex, date) {
 				console.log(error);
 			});
 	};
+
+
+	/////////////////////////  states ////////////////////////////////////
+
 	const classes = useStyles();
-	const [ category, setCategory ] = React.useState([]);
-	const [ tempCategory, setTempCategory ] = React.useState([]);
-	const [ menuArr, setMenuArr ] = React.useState([
+	const [category, setCategory] = React.useState([]);
+	const [tempCategory, setTempCategory] = React.useState([]);
+	const [menuArr, setMenuArr] = React.useState([
 		{
 			category: category[category.length - 1],
 			name: '',
@@ -63,7 +67,7 @@ function getStepContent(stepIndex, date) {
 			description: ''
 		}
 	]);
-	const [ updateUser, SetUpdateUser ] = React.useState({
+	const [updateUser, SetUpdateUser] = React.useState({
 		name: null,
 		email: null,
 		Language: null,
@@ -94,10 +98,14 @@ function getStepContent(stepIndex, date) {
 		truckWebsite: null,
 		activeStatus: 'Active'
 	});
-	const [ resets, isResets ] = React.useState(false);
-	const [ cusine, setCusine ] = React.useState([]);
-	const [ cusines, setCusines ] = React.useState([]);
-	const [ week, setWeek ] = React.useState([
+
+
+
+
+	const [resets, isResets] = React.useState(false);
+	const [cusine, setCusine] = React.useState([]);
+	const [cusines, setCusines] = React.useState([]);
+	const [week, setWeek] = React.useState([
 		{
 			day: 'Monday',
 			working: false,
@@ -141,15 +149,82 @@ function getStepContent(stepIndex, date) {
 			closing: '5:00 PM'
 		}
 	]);
+
+
+
+	////////////////////// CALLBACKS /////////////////////////
+
 	const onChangeUserData = (e, val) => {
 		updateUser[val] = e.target.value;
 		SetUpdateUser(updateUser);
 		// isReset(!reset);
 	};
-	const saveData =()=>{
-		//console.log('')
-		//api call
+
+	const checkStateUpdateUser = (query) => {
+		if (updateUser[query] == null) {
+			return ''
+		} else return updateUser[query]
 	}
+
+	const saveData = () => {
+		let data = {
+			email: checkStateUpdateUser('email'),
+			password: checkStateUpdateUser('password'),
+			profileName: checkStateUpdateUser('profileName'),
+			truckLogo: checkStateUpdateUser('truckLogo'),
+			coverPhoto: checkStateUpdateUser('coverPhoto'), //img
+			phoneNumber: checkStateUpdateUser('phoneNumber'),
+			userType: 'Supplier',
+			truckName: checkStateUpdateUser('truckName'),
+			businessDesc: checkStateUpdateUser('businessDesc'),
+			truckContact: checkStateUpdateUser('truckContact'),
+			truckEmail: checkStateUpdateUser('truckEmail'),
+			truckCity: checkStateUpdateUser('truckCity'),
+			truckWebsite: checkStateUpdateUser('truckWebsite'),
+			schedule: checkStateUpdateUser('schedule'),
+			facebook: checkStateUpdateUser('facebook'),
+			instagram: checkStateUpdateUser('instagram'),
+			twitter: checkStateUpdateUser('twitter'),
+			selectedServingCusines: checkStateUpdateUser('selectedServingCusines'),
+			Menu: checkStateUpdateUser('Menu'),
+			categoryArray: checkStateUpdateUser('categoryArray'),
+		}
+
+		console.log('exporting the data', data)
+		axios.post("https://tyft-backend.herokuapp.com/api/users/signup", data).then(
+			async Response => {
+				let Code = Response.data.code;
+				console.log('Response is here')
+				if (Code === 'ABT0000') {
+					console.log('successful')
+					//succesfull
+				} else {
+					console.log('failed')
+					//fail
+				}
+			}
+		).catch(error => {
+			console.log(error);
+		})
+	}
+	// axios
+	// 	.post(
+	// 		url + '/api/users/signup',
+	// 		data,
+	// 	)
+	// 	.then(async Response => {
+	// 		let Code = Response.data.code;
+	// 		console.log('Response is here')
+	// 		if (Code === 'ABT0000') {
+	// 			//succesfykk
+	// 		} else {
+	// 			//fail
+	// 		}
+	// 	})
+	// 	.catch(error => {
+	// 		console.log(error);
+	// 	});
+
 	const handleChange = (e, val) => {
 		let copyArr = week;
 		console.log(copyArr);
@@ -206,7 +281,7 @@ function getStepContent(stepIndex, date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
+						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'email'),
 						required: true,
 						id: 'row-heights1',
@@ -220,7 +295,7 @@ function getStepContent(stepIndex, date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
+						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'phoneNumber'),
 						required: true,
 						id: 'row-heights2',
@@ -234,7 +309,7 @@ function getStepContent(stepIndex, date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
+						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'password'),
 						required: true,
 						id: 'row-heights3',
@@ -248,7 +323,7 @@ function getStepContent(stepIndex, date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
+						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'facebook'),
 						required: true,
 						id: 'row-heights3',
@@ -262,7 +337,7 @@ function getStepContent(stepIndex, date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
+						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'instagram'),
 						required: true,
 						id: 'row-heights3',
@@ -276,7 +351,7 @@ function getStepContent(stepIndex, date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						data: [ 'Auto', 'Exact', 'Atleast' ],
+						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'twitter'),
 						required: true,
 						id: 'row-heights3',
@@ -285,670 +360,670 @@ function getStepContent(stepIndex, date) {
 				}
 			]
 		}) ||
-			(stepIndex === 1 && {
-				heading: 'Rows',
-				controls: [
-					{
-						label: 'Truck Name:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeUserData(e, 'truckName'),
-							required: true,
-							id: 'row-heights0',
-							value: updateUser.truckName
-						}
-					},
-					{
-						label: 'Business Description:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeUserData(e, 'businessDesc'),
-							required: true,
-							id: 'row-heights0',
-							value: updateUser.businessDesc
-						}
-					},
-					{
-						label: 'Contact:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeUserData(e, 'truckContact'),
-							required: true,
-							id: 'row-heights0',
-							value: updateUser.truckContact
-						}
-					},
-					{
-						label: 'Truck Email:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeUserData(e, 'truckEmail'),
-							required: true,
-							id: 'row-heights0',
-							value: updateUser.truckEmail
-						}
-					},
-					{
-						label: 'Truck City:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeUserData(e, 'truckCity'),
-							required: true,
-							id: 'row-heights0',
-							value: updateUser.truckCity
-						}
-					},
-					{
-						label: 'Truck Website:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeUserData(e, 'truckWebsite'),
-							required: true,
-							id: 'row-heights0',
-							value: updateUser.truckWebsite
+		(stepIndex === 1 && {
+			heading: 'Rows',
+			controls: [
+				{
+					label: 'Truck Name:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeUserData(e, 'truckName'),
+						required: true,
+						id: 'row-heights0',
+						value: updateUser.truckName
+					}
+				},
+				{
+					label: 'Business Description:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeUserData(e, 'businessDesc'),
+						required: true,
+						id: 'row-heights0',
+						value: updateUser.businessDesc
+					}
+				},
+				{
+					label: 'Contact:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeUserData(e, 'truckContact'),
+						required: true,
+						id: 'row-heights0',
+						value: updateUser.truckContact
+					}
+				},
+				{
+					label: 'Truck Email:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeUserData(e, 'truckEmail'),
+						required: true,
+						id: 'row-heights0',
+						value: updateUser.truckEmail
+					}
+				},
+				{
+					label: 'Truck City:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeUserData(e, 'truckCity'),
+						required: true,
+						id: 'row-heights0',
+						value: updateUser.truckCity
+					}
+				},
+				{
+					label: 'Truck Website:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeUserData(e, 'truckWebsite'),
+						required: true,
+						id: 'row-heights0',
+						value: updateUser.truckWebsite
+					}
+				}
+			]
+		}) ||
+		(stepIndex === 2 && {
+			heading: 'Business Hour',
+			controls: [
+				{
+					xsSize: 4,
+					component: FormControlLabel,
+					props: {
+						control: (
+							<Checkbox
+								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+								checkedIcon={<CheckBoxIcon fontSize="small" />}
+								name="checkedI"
+								checked={week[0].working}
+								onChange={() => handleChange('Monday', 0)}
+								onC
+							/>
+						),
+						label: 'Monday',
+						paddingTop: '21px'
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						// defaultValue: '08:00AM',
+						className: classes.textField,
+						onChange: (e) => handleChangeTime(e, 'opening', 'Monday', 0),
+						disabled: !week[0].working,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
 						}
 					}
-				]
-			}) ||
-			(stepIndex === 2 && {
-				heading: 'Business Hour',
-				controls: [
-					{
-						xsSize: 4,
-						component: FormControlLabel,
-						props: {
-							control: (
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									name="checkedI"
-									checked={week[0].working}
-									onChange={() => handleChange('Monday', 0)}
-									onC
-								/>
-							),
-							label: 'Monday',
-							paddingTop: '21px'
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							// defaultValue: '08:00AM',
-							className: classes.textField,
-							onChange: (e) => handleChangeTime(e, 'opening', 'Monday', 0),
-							disabled: !week[0].working,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock1',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'closing', 'Monday', 0),
-							disabled: !week[0].working,
-							// defaultValue: '05:00PM',
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						xsSize: 4,
-						component: FormControlLabel,
-						props: {
-							control: (
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									name="checkedI"
-									checked={week[1].working}
-									onChange={() => handleChange('Tuesday', 1)}
-								/>
-							),
-							label: 'Tuesday',
-							paddingTop: '21px'
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'opening', 'Tuesday', 1),
-							disabled: !week[1].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'closing', 'Tuesday', 1),
-							disabled: !week[1].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						xsSize: 4,
-						component: FormControlLabel,
-						props: {
-							control: (
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									name="checkedI"
-									checked={week[2].working}
-									onChange={() => handleChange('Wednesday', 2)}
-								/>
-							),
-							label: 'Wednesday',
-							paddingTop: '21px'
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'opening', 'Wednesday', 2),
-							disabled: !week[2].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'closing', 'Wednesday', 2),
-							disabled: !week[2].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						xsSize: 4,
-						component: FormControlLabel,
-						props: {
-							control: (
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									name="checkedI"
-									checked={week[3].working}
-									onChange={() => handleChange('Thursday', 3)}
-								/>
-							),
-							label: 'Thursday',
-							paddingTop: '21px'
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'opening', 'Thursday', 3),
-							disabled: !week[3].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'closing', 'Thursday', 3),
-							disabled: !week[3].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						xsSize: 4,
-						component: FormControlLabel,
-						props: {
-							control: (
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									name="checkedI"
-									checked={week[4].working}
-									onChange={() => handleChange('Friday', 4)}
-								/>
-							),
-							label: 'Friday',
-							paddingTop: '21px'
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'opening', 'Friday', 4),
-							disabled: !week[4].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'closing', 'Friday', 4),
-							disabled: !week[4].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						xsSize: 4,
-						component: FormControlLabel,
-						props: {
-							control: (
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									name="checkedI"
-									checked={week[5].working}
-									onChange={() => handleChange('Saturday', 5)}
-								/>
-							),
-							label: 'Saturday',
-							paddingTop: '21px'
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'opening', 'Saturday', 5),
-							disabled: !week[5].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'closing', 'Saturday', 5),
-							disabled: !week[5].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						xsSize: 4,
-						component: FormControlLabel,
-						props: {
-							control: (
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									name="checkedI"
-									checked={week[6].working}
-									onChange={() => handleChange('Sunday', 6)}
-								/>
-							),
-							label: 'Sunday',
-							paddingTop: '21px'
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'opening', 'Sunday', 6),
-							disabled: !week[6].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
-						}
-					},
-					{
-						// label: 'Name:',
-						// xsLabel: 1,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							id: 'time',
-							label: 'Alarm clock',
-							type: 'time',
-							onChange: (e) => handleChangeTime(e, 'closing', 'Sunday', 6),
-							disabled: !week[6].working,
-							className: classes.textField,
-							variants: true,
-							InputLabelProps: {
-								shrink: true
-							},
-							inputProps: {
-								step: 300 // 5 min
-							}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock1',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'closing', 'Monday', 0),
+						disabled: !week[0].working,
+						// defaultValue: '05:00PM',
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
 						}
 					}
-				]
-			}) ||
-			(stepIndex === 3 && {
-				heading: 'Serving Cusines',
-				controls: [
-					{
-						// xsLabel: 1,
-						xsSize: 12,
-						component: TransferList,
-						props: {
-							className: classes.inputclass,
-							data: cusine,
-							right: cusines,
-							// getServingCusine: getServingCusine,
-							getServingCusine: getServingCusine,
-							required: true,
-							id: 'row-heights0',
-							value: 'e'
+				},
+				{
+					xsSize: 4,
+					component: FormControlLabel,
+					props: {
+						control: (
+							<Checkbox
+								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+								checkedIcon={<CheckBoxIcon fontSize="small" />}
+								name="checkedI"
+								checked={week[1].working}
+								onChange={() => handleChange('Tuesday', 1)}
+							/>
+						),
+						label: 'Tuesday',
+						paddingTop: '21px'
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'opening', 'Tuesday', 1),
+						disabled: !week[1].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
 						}
 					}
-				]
-			}) ||
-			(stepIndex === 4 && {
-				heading: 'Rows',
-				controls: [
-					{
-						label: 'Add Category:',
-						xsLabel: 6,
-						xsSize: 4,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => setTempCategory(e.target.value),
-							required: true,
-							id: 'row-heights0',
-							value: tempCategory
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'closing', 'Tuesday', 1),
+						disabled: !week[1].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
 						}
-					},
-					{
-						xsSize: 2,
-						component: AddIcon,
-						alignItem: 'center',
-						props: {
-							onClick: () => {
-								category.push(tempCategory);
-								setCategory(category);
-								setTempCategory('');
-								isResets(!resets);
-							},
-							style: {
-								cursor: 'pointer'
-							},
-							// rootClass: classes.smallWidth,
-							// data: category,
-							// // onChange: (e) => onChangeUserData(e, 'email'),
-							// required: true,
-							id: 'row-heights03'
-							// value: 'e',
+					}
+				},
+				{
+					xsSize: 4,
+					component: FormControlLabel,
+					props: {
+						control: (
+							<Checkbox
+								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+								checkedIcon={<CheckBoxIcon fontSize="small" />}
+								name="checkedI"
+								checked={week[2].working}
+								onChange={() => handleChange('Wednesday', 2)}
+							/>
+						),
+						label: 'Wednesday',
+						paddingTop: '21px'
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'opening', 'Wednesday', 2),
+						disabled: !week[2].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
 						}
-					},
-					{
-						label: 'Categories:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: Select,
-						props: {
-							rootClass: classes.smallWidth,
-							data: category,
-							onChange: (e) => onChangeMenu(e, 'category'),
-							required: true,
-							id: 'row-heights0',
-							value: menuArr[indexes].category
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'closing', 'Wednesday', 2),
+						disabled: !week[2].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
 						}
-					},
+					}
+				},
+				{
+					xsSize: 4,
+					component: FormControlLabel,
+					props: {
+						control: (
+							<Checkbox
+								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+								checkedIcon={<CheckBoxIcon fontSize="small" />}
+								name="checkedI"
+								checked={week[3].working}
+								onChange={() => handleChange('Thursday', 3)}
+							/>
+						),
+						label: 'Thursday',
+						paddingTop: '21px'
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'opening', 'Thursday', 3),
+						disabled: !week[3].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'closing', 'Thursday', 3),
+						disabled: !week[3].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				},
+				{
+					xsSize: 4,
+					component: FormControlLabel,
+					props: {
+						control: (
+							<Checkbox
+								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+								checkedIcon={<CheckBoxIcon fontSize="small" />}
+								name="checkedI"
+								checked={week[4].working}
+								onChange={() => handleChange('Friday', 4)}
+							/>
+						),
+						label: 'Friday',
+						paddingTop: '21px'
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'opening', 'Friday', 4),
+						disabled: !week[4].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'closing', 'Friday', 4),
+						disabled: !week[4].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				},
+				{
+					xsSize: 4,
+					component: FormControlLabel,
+					props: {
+						control: (
+							<Checkbox
+								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+								checkedIcon={<CheckBoxIcon fontSize="small" />}
+								name="checkedI"
+								checked={week[5].working}
+								onChange={() => handleChange('Saturday', 5)}
+							/>
+						),
+						label: 'Saturday',
+						paddingTop: '21px'
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'opening', 'Saturday', 5),
+						disabled: !week[5].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'closing', 'Saturday', 5),
+						disabled: !week[5].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				},
+				{
+					xsSize: 4,
+					component: FormControlLabel,
+					props: {
+						control: (
+							<Checkbox
+								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+								checkedIcon={<CheckBoxIcon fontSize="small" />}
+								name="checkedI"
+								checked={week[6].working}
+								onChange={() => handleChange('Sunday', 6)}
+							/>
+						),
+						label: 'Sunday',
+						paddingTop: '21px'
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'opening', 'Sunday', 6),
+						disabled: !week[6].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				},
+				{
+					// label: 'Name:',
+					// xsLabel: 1,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						id: 'time',
+						label: 'Alarm clock',
+						type: 'time',
+						onChange: (e) => handleChangeTime(e, 'closing', 'Sunday', 6),
+						disabled: !week[6].working,
+						className: classes.textField,
+						variants: true,
+						InputLabelProps: {
+							shrink: true
+						},
+						inputProps: {
+							step: 300 // 5 min
+						}
+					}
+				}
+			]
+		}) ||
+		(stepIndex === 3 && {
+			heading: 'Serving Cusines',
+			controls: [
+				{
+					// xsLabel: 1,
+					xsSize: 12,
+					component: TransferList,
+					props: {
+						className: classes.inputclass,
+						data: cusine,
+						right: cusines,
+						// getServingCusine: getServingCusine,
+						getServingCusine: getServingCusine,
+						required: true,
+						id: 'row-heights0',
+						value: 'e'
+					}
+				}
+			]
+		}) ||
+		(stepIndex === 4 && {
+			heading: 'Rows',
+			controls: [
+				{
+					label: 'Add Category:',
+					xsLabel: 6,
+					xsSize: 4,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => setTempCategory(e.target.value),
+						required: true,
+						id: 'row-heights0',
+						value: tempCategory
+					}
+				},
+				{
+					xsSize: 2,
+					component: AddIcon,
+					alignItem: 'center',
+					props: {
+						onClick: () => {
+							category.push(tempCategory);
+							setCategory(category);
+							setTempCategory('');
+							isResets(!resets);
+						},
+						style: {
+							cursor: 'pointer'
+						},
+						// rootClass: classes.smallWidth,
+						// data: category,
+						// // onChange: (e) => onChangeUserData(e, 'email'),
+						// required: true,
+						id: 'row-heights03'
+						// value: 'e',
+					}
+				},
+				{
+					label: 'Categories:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: Select,
+					props: {
+						rootClass: classes.smallWidth,
+						data: category,
+						onChange: (e) => onChangeMenu(e, 'category'),
+						required: true,
+						id: 'row-heights0',
+						value: menuArr[indexes].category
+					}
+				},
 
-					{
-						label: 'Name:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeMenu(e, 'name'),
-							required: true,
-							id: 'row-heights0',
-							value: menuArr[indexes].name
-						}
-					},
-					{
-						label: 'Description:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onChange: (e) => onChangeMenu(e, 'description'),
-							required: true,
-							id: 'row-heights0',
-							value: menuArr[indexes].description
-						}
-					},
-					{
-						label: 'Price:',
-						xsLabel: 6,
-						xsSize: 6,
-						component: TextField,
-						props: {
-							className: classes.inputclass,
-							onChange: (e) => onChangeMenu(e, 'price'),
-							required: true,
-							id: 'row-heights0',
-							value: menuArr[indexes].price
-						}
-					},
-					{
-						xsSize: 12,
-						component: Button,
-						props: {
-							className: classes.inputclass,
-							data: [ 'Auto', 'Exact', 'Atleast' ],
-							onClick: () => {
-								indexes += 1;
-								console.log(menuArr);
-								let copycat = [
-									...menuArr,
-									{
-										category: category[category.length - 1],
-										name: '',
-										price: '',
-										description: ''
-									}
-								];
-								console.log(copycat);
-								setMenuArr(copycat);
-								isResets(!resets);
-							},
-							style: { background: 'grey' },
-							// onChange: (e) => onChangeUserData(e, 'email'),
-							required: true,
-							id: 'row-heights0',
-							value: 'e',
-							children: 'Add to List'
-						}
-					},
-					{
-						xsSize: 12,
-						component: List,
-						props: {
-							data: menuArr
-						}
+				{
+					label: 'Name:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeMenu(e, 'name'),
+						required: true,
+						id: 'row-heights0',
+						value: menuArr[indexes].name
 					}
-				]
-			})
+				},
+				{
+					label: 'Description:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onChange: (e) => onChangeMenu(e, 'description'),
+						required: true,
+						id: 'row-heights0',
+						value: menuArr[indexes].description
+					}
+				},
+				{
+					label: 'Price:',
+					xsLabel: 6,
+					xsSize: 6,
+					component: TextField,
+					props: {
+						className: classes.inputclass,
+						onChange: (e) => onChangeMenu(e, 'price'),
+						required: true,
+						id: 'row-heights0',
+						value: menuArr[indexes].price
+					}
+				},
+				{
+					xsSize: 12,
+					component: Button,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onClick: () => {
+							indexes += 1;
+							console.log(menuArr);
+							let copycat = [
+								...menuArr,
+								{
+									category: category[category.length - 1],
+									name: '',
+									price: '',
+									description: ''
+								}
+							];
+							console.log(copycat);
+							setMenuArr(copycat);
+							isResets(!resets);
+						},
+						style: { background: 'grey' },
+						// onChange: (e) => onChangeUserData(e, 'email'),
+						required: true,
+						id: 'row-heights0',
+						value: 'e',
+						children: 'Add to List'
+					}
+				},
+				{
+					xsSize: 12,
+					component: List,
+					props: {
+						data: menuArr
+					}
+				}
+			]
+		})
 	];
 	// switch (stepIndex) {
 	// 	case 0:
@@ -997,8 +1072,8 @@ function getStepContent(stepIndex, date) {
 					);
 				}
 			})}
-				<Button onClick={saveData}>
-					Save Supplier
+			<Button onClick={saveData}>
+				Save Supplier
 				</Button>
 		</React.Fragment>
 	);
@@ -1006,19 +1081,18 @@ function getStepContent(stepIndex, date) {
 
 export default function HorizontalLabelPositionBelowStepper(props) {
 	const classes = useStyles();
-	const [ activeStep, setActiveStep ] = React.useState(0);
-	const [ date, setDate ] = React.useState(new Date());
+	const [activeStep, setActiveStep] = React.useState(0);
+	const [date, setDate] = React.useState(new Date());
 	const steps = getSteps();
 
-	const handleNext = (active,step) => {
+	const handleNext = (active, step) => {
 		console.log(active);
 		console.log(step);
-		if (active===4)
-		{
-			
+		if (active === 4) {
+
 			props.onClose();
 			setActiveStep(1);
-		} 
+		}
 		else setActiveStep((prevActiveStep) => prevActiveStep + 1);
 	};
 
@@ -1055,7 +1129,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 							<Button
 								variant="contained"
 								color="primary"
-								onClick={()=>handleNext(activeStep,steps)}
+								onClick={() => handleNext(activeStep, steps)}
 							>
 								{activeStep === steps.length - 1 ? 'Finish' : 'Next'}
 							</Button>
