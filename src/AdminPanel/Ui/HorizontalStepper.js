@@ -70,7 +70,7 @@ function getStepContent(stepIndex, date) {
 		}
 	]);
 	const [updateUser, SetUpdateUser] = React.useState({
-		name: '',
+		profileName: '',
 		email: '',
 		Language: '',
 		isAdmin: '',
@@ -215,10 +215,10 @@ function getStepContent(stepIndex, date) {
 				let Code = Response.data.code;
 				console.log('Response is here')
 				if (Code === 'ABT0000') {
-					console.log('successful')
+					alert('Successfully Added a Supplier')
 					//succesfull
 				} else {
-					console.log('failed')
+					alert('Unable to add a Supplier')
 					//fail
 				}
 			}
@@ -290,10 +290,10 @@ function getStepContent(stepIndex, date) {
 					component: TextField,
 					props: {
 						className: classes.inputclass,
-						onChange: (e) => onChangeUserData(e, 'name'),
+						onChange: (e) => onChangeUserData(e, 'profileName'),
 						required: true,
 						id: 'row-heights0',
-						value: updateUser.name,
+						value: updateUser.profileName,
 					}
 				},
 				{
@@ -488,7 +488,6 @@ function getStepContent(stepIndex, date) {
 								name="checkedI"
 								checked={week[0].working}
 								onChange={() => handleChange('Monday', 0)}
-								onC
 							/>
 						),
 						label: 'Monday',
@@ -1046,7 +1045,22 @@ function getStepContent(stepIndex, date) {
 					props: {
 						data: menuArr
 					}
-				}
+				},
+				{
+					xsSize: 12,
+					component: Button,
+					props: {
+						className: classes.inputclass,
+						data: ['Auto', 'Exact', 'Atleast'],
+						onClick: saveData,
+						style: { background: '#3f51b5' ,color:'white',    marginLeft: '39%'},
+						// onChange: (e) => onChangeUserData(e, 'email'),
+						required: true,
+						id: 'row-heights20',
+						value: 'e',
+						children: 'Save Supplier'
+					}
+				},
 			]
 		})
 	];
@@ -1097,9 +1111,6 @@ function getStepContent(stepIndex, date) {
 					);
 				}
 			})}
-			<Button onClick={saveData}>
-				Save Supplier
-				</Button>
 		</React.Fragment>
 	);
 }
