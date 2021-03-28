@@ -68,37 +68,36 @@ function getStepContent(stepIndex, date) {
 		}
 	]);
 	const [updateUser, SetUpdateUser] = React.useState({
-		name: null,
-		email: null,
-		Language: null,
-		isAdmin: null,
-		phoneNumber: null,
-		profileName: null,
-		password: null,
-		userType: null,
-		TruckID: null,
-		MenuID: null,
-		businessDesc: null,
-		categoryArray: null,
-		coverPhoto: null,
-		customerReview: null,
-		latitude: null,
-		longitude: null,
-		schedule: null,
-		selectedServingCusines: null,
-		facebook: null,
-		instagram: null,
-		twitter: null,
-		status: null,
-		truckCity: null,
-		truckContact: null,
-		truckEmail: null,
-		truckLogo: null,
-		truckName: null,
-		truckWebsite: null,
+		name: '',
+		email: '',
+		Language: '',
+		isAdmin: '',
+		phoneNumber: '',
+		profileName: '',
+		password: '',
+		userType: '',
+		TruckID: '',
+		MenuID: '',
+		businessDesc: '',
+		categoryArray: '',
+		coverPhoto: '',
+		customerReview: '',
+		latitude: '',
+		longitude: '',
+		schedule: '',
+		selectedServingCusines: '',
+		facebook: '',
+		instagram: '',
+		twitter: '',
+		status: '',
+		truckCity: '',
+		truckContact: '',
+		truckEmail: '',
+		truckLogo: '',
+		truckName: '',
+		truckWebsite: '',
 		activeStatus: 'Active'
 	});
-
 
 
 
@@ -155,8 +154,9 @@ function getStepContent(stepIndex, date) {
 	////////////////////// CALLBACKS /////////////////////////
 
 	const onChangeUserData = (e, val) => {
-		updateUser[val] = e.target.value;
-		SetUpdateUser(updateUser);
+		let tempObj = {...updateUser};
+		tempObj[val] = e.target.value;
+		SetUpdateUser(tempObj);
 		// isReset(!reset);
 	};
 
