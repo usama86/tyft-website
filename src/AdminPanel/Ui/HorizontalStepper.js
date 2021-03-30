@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from './Grid';
 import Label from './Label';
 import Stepper from '@material-ui/core/Stepper';
@@ -30,6 +30,9 @@ function getStepContent(stepIndex, date) {
 	React.useEffect(() => {
 		getCusine();
 	}, []);
+	React.useEffect(() => {
+		buildRequiredInputArr()
+	}, [, stepIndex])
 	const getCusine = async () => {
 		axios
 			.get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
@@ -57,6 +60,7 @@ function getStepContent(stepIndex, date) {
 
 
 	/////////////////////////  states ////////////////////////////////////
+
 
 	const classes = useStyles();
 	const [category, setCategory] = React.useState([]);
@@ -151,12 +155,13 @@ function getStepContent(stepIndex, date) {
 		}
 	]);
 
+	const [requiredState, setRequiredState] = React.useState()
 
 
 	////////////////////// CALLBACKS /////////////////////////
 
 	const onChangeUserData = (e, val) => {
-		let tempObj = {...updateUser};
+		let tempObj = { ...updateUser };
 		tempObj[val] = e.target.value;
 		SetUpdateUser(tempObj);
 		// isReset(!reset);
@@ -169,15 +174,13 @@ function getStepContent(stepIndex, date) {
 	}
 
 	const saveData = () => {  //[1,2,3]  len 3    c=0 1  c=1 3          2
-		let count=0;
-		for(let i=0;i<cusineTemp.length;i++)
-		{
-			if(cusineTemp[i].cusineName===cusines[count])
-			{
-				cusineTemp[i].checked=true;
-				i=0;
+		let count = 0;
+		for (let i = 0; i < cusineTemp.length; i++) {
+			if (cusineTemp[i].cusineName === cusines[count]) {
+				cusineTemp[i].checked = true;
+				i = 0;
 				count++;
-				if(count===cusines.length)
+				if (count === cusines.length)
 					break;
 			}
 		}
@@ -253,7 +256,6 @@ function getStepContent(stepIndex, date) {
 		isResets(!resets);
 	};
 	const getServingCusine = (data) => {
-		console.log(data);
 		setCusines(data);
 	};
 	const handleChangeTime = (e, timeType, Day, index) => {
@@ -279,11 +281,45 @@ function getStepContent(stepIndex, date) {
 	const update = () => {
 		return true
 	}
+
+	// ASAD BHATTIS METHOD
+	const [requiredInput, setRequiredInput] = useState([])
+	const [missingInput, setMissingInput] = useState(false)
+
+	const requiredDayOfWeek = true
+
+	const buildRequiredInputArr = () => {
+		const requiredInputCopy = []
+		let weekDay = []
+		let rightCusineList = []
+		expData[0].controls.forEach(el => {
+			if (Object.keys(el.props).includes('required')) {
+				(el.props.required) ? requiredInputCopy.push(el.inputName) : null
+			}
+			if (stepIndex === 2) {
+				let [dayName, type, startEnd] = el.inputName.split('-')
+				if (type === 'name') {
+					weekDay.push(dayName)
+				}
+			}
+			if (stepIndex === 3) {
+				rightCusineList = [...el.props.right]
+			}
+			if (stepIndex === 4) {
+				console.log('testing', el)
+			}
+		})
+		setRequiredInput(requiredInputCopy)
+	}
+
+
+
 	let expData = [
 		(stepIndex === 0 && {
 			heading: 'Rows',
 			controls: [
 				{
+					inputName: 'name',
 					label: 'Name:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -297,6 +333,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'email',
 					label: 'Email Address:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -313,6 +350,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'cellPhone',
 					label: 'Cell Phone:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -327,6 +365,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'pass',
 					label: 'Password:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -341,6 +380,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'facebook',
 					label: 'Facebook:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -349,12 +389,13 @@ function getStepContent(stepIndex, date) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'facebook'),
-						required: true,
+						required: false,
 						id: 'row-heights4',
 						value: updateUser.facebook
 					}
 				},
 				{
+					inputName: 'inst',
 					label: 'Instagram:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -363,12 +404,13 @@ function getStepContent(stepIndex, date) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'instagram'),
-						required: true,
+						required: false,
 						id: 'row-heights5',
 						value: updateUser.instagram
 					}
 				},
 				{
+					inputName: 'twitter',
 					label: 'Twitter:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -377,7 +419,7 @@ function getStepContent(stepIndex, date) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'twitter'),
-						required: true,
+						required: false,
 						id: 'row-heights6',
 						value: updateUser.twitter
 					}
@@ -385,10 +427,11 @@ function getStepContent(stepIndex, date) {
 			]
 		}) ||
 		(stepIndex === 1 && {
-			heading: 'Rows',
+			heading: 'Truck Rows',
 			controls: [
 				{
 					label: 'Truck Name:',
+					inputName: 'trName',
 					xsLabel: 6,
 					xsSize: 6,
 					component: TextField,
@@ -403,6 +446,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'trBusDesc',
 					label: 'Business Description:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -417,6 +461,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'trContact',
 					label: 'Contact:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -431,6 +476,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'trEmail',
 					label: 'Truck Email:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -445,6 +491,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'trCity',
 					label: 'Truck City:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -459,6 +506,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'trWeb',
 					label: 'Truck Website:',
 					xsLabel: 6,
 					xsSize: 6,
@@ -467,7 +515,7 @@ function getStepContent(stepIndex, date) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeUserData(e, 'truckWebsite'),
-						required: true,
+						required: false,
 						id: 'row-heights12',
 						value: updateUser.truckWebsite
 					}
@@ -480,12 +528,13 @@ function getStepContent(stepIndex, date) {
 				{
 					xsSize: 4,
 					component: FormControlLabel,
+					inputName: 'monday-name',
 					props: {
 						control: (
 							<Checkbox
 								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
 								checkedIcon={<CheckBoxIcon fontSize="small" />}
-								name="checkedI"
+								name="checkedI" sssss
 								checked={week[0].working}
 								onChange={() => handleChange('Monday', 0)}
 							/>
@@ -497,6 +546,7 @@ function getStepContent(stepIndex, date) {
 				{
 					// label: 'Name:',
 					// xsLabel: 1,
+					inputName: 'monday-time-start',
 					xsSize: 4,
 					component: TextField,
 					props: {
@@ -520,6 +570,7 @@ function getStepContent(stepIndex, date) {
 					// label: 'Name:',
 					// xsLabel: 1,
 					xsSize: 4,
+					inputName: 'monday-time-end',
 					component: TextField,
 					props: {
 						id: 'time',
@@ -540,6 +591,7 @@ function getStepContent(stepIndex, date) {
 				},
 				{
 					xsSize: 4,
+					inputName: 'tuesday-name',
 					component: FormControlLabel,
 					props: {
 						control: (
@@ -560,6 +612,7 @@ function getStepContent(stepIndex, date) {
 					// xsLabel: 1,
 					xsSize: 4,
 					component: TextField,
+					inputName: 'tuesday-time-start',
 					props: {
 						id: 'time',
 						label: 'Alarm clock',
@@ -580,6 +633,7 @@ function getStepContent(stepIndex, date) {
 					// label: 'Name:',
 					// xsLabel: 1,
 					xsSize: 4,
+					inputName: 'tuesday-time-end',
 					component: TextField,
 					props: {
 						id: 'time',
@@ -599,6 +653,7 @@ function getStepContent(stepIndex, date) {
 				},
 				{
 					xsSize: 4,
+					inputName: 'wednesday-name',
 					component: FormControlLabel,
 					props: {
 						control: (
@@ -618,6 +673,7 @@ function getStepContent(stepIndex, date) {
 					// label: 'Name:',
 					// xsLabel: 1,
 					xsSize: 4,
+					inputName: 'wednesday-time-start',
 					component: TextField,
 					props: {
 						id: 'time',
@@ -639,6 +695,7 @@ function getStepContent(stepIndex, date) {
 					// label: 'Name:',
 					// xsLabel: 1,
 					xsSize: 4,
+					inputName: 'wednesday-time-end',
 					component: TextField,
 					props: {
 						id: 'time',
@@ -657,6 +714,7 @@ function getStepContent(stepIndex, date) {
 					}
 				},
 				{
+					inputName: 'thursday-name',
 					xsSize: 4,
 					component: FormControlLabel,
 					props: {
@@ -677,6 +735,7 @@ function getStepContent(stepIndex, date) {
 					// label: 'Name:',
 					// xsLabel: 1,
 					xsSize: 4,
+					inputName: 'thursday-time-start',
 					component: TextField,
 					props: {
 						id: 'time',
@@ -697,6 +756,7 @@ function getStepContent(stepIndex, date) {
 				{
 					// label: 'Name:',
 					// xsLabel: 1,
+					inputName: 'thursday-time-end',
 					xsSize: 4,
 					component: TextField,
 					props: {
@@ -717,6 +777,7 @@ function getStepContent(stepIndex, date) {
 				},
 				{
 					xsSize: 4,
+					inputName: 'friday-name',
 					component: FormControlLabel,
 					props: {
 						control: (
@@ -735,6 +796,7 @@ function getStepContent(stepIndex, date) {
 				{
 					// label: 'Name:',
 					// xsLabel: 1,
+					inputName: 'friday-time-start',
 					xsSize: 4,
 					component: TextField,
 					props: {
@@ -756,6 +818,7 @@ function getStepContent(stepIndex, date) {
 				{
 					// label: 'Name:',
 					// xsLabel: 1,
+					inputName: 'friday-time-end',
 					xsSize: 4,
 					component: TextField,
 					props: {
@@ -776,6 +839,7 @@ function getStepContent(stepIndex, date) {
 				},
 				{
 					xsSize: 4,
+					inputName: 'saturday-name',
 					component: FormControlLabel,
 					props: {
 						control: (
@@ -794,6 +858,7 @@ function getStepContent(stepIndex, date) {
 				{
 					// label: 'Name:',
 					// xsLabel: 1,
+					inputName: 'saturday-time-start',
 					xsSize: 4,
 					component: TextField,
 					props: {
@@ -815,6 +880,7 @@ function getStepContent(stepIndex, date) {
 				{
 					// label: 'Name:',
 					// xsLabel: 1,
+					inputName: 'saturday-time-end',
 					xsSize: 4,
 					component: TextField,
 					props: {
@@ -835,6 +901,7 @@ function getStepContent(stepIndex, date) {
 				},
 				{
 					xsSize: 4,
+					inputName: 'sunday-name',
 					component: FormControlLabel,
 					props: {
 						control: (
@@ -854,6 +921,7 @@ function getStepContent(stepIndex, date) {
 					// label: 'Name:',
 					// xsLabel: 1,
 					xsSize: 4,
+					inputName: 'sunday-time-start',
 					component: TextField,
 					props: {
 						id: 'time',
@@ -875,6 +943,7 @@ function getStepContent(stepIndex, date) {
 					// label: 'Name:',
 					// xsLabel: 1,
 					xsSize: 4,
+					inputName: 'sunday-time-end',
 					component: TextField,
 					props: {
 						id: 'time',
@@ -915,7 +984,7 @@ function getStepContent(stepIndex, date) {
 			]
 		}) ||
 		(stepIndex === 4 && {
-			heading: 'Rows',
+			heading: 'Menu',
 			controls: [
 				{
 					label: 'Add Category:',
@@ -1053,7 +1122,7 @@ function getStepContent(stepIndex, date) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onClick: saveData,
-						style: { background: '#3f51b5' ,color:'white',    marginLeft: '39%'},
+						style: { background: '#3f51b5', color: 'white', marginLeft: '39%' },
 						// onChange: (e) => onChangeUserData(e, 'email'),
 						required: true,
 						id: 'row-heights20',
