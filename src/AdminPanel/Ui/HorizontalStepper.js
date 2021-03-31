@@ -33,7 +33,15 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 	const [date, setDate] = React.useState(new Date());
 	const steps = getSteps();
 
-	const handleNext = (active, step) => {	
+	const handleNext = (active) => {	
+		if(active===0)
+		{
+			if(updateUser.profileName==='' )
+			{
+				
+			}
+		}
+		//baqi checks
 		if (active === 4) {
 			props.onClose();
 			setActiveStep(1);
