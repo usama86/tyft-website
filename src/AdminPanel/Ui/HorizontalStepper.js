@@ -26,13 +26,34 @@ function getSteps() {
 	//Truck Info 'Social Media'
 }
 let indexes = 0;
-function getStepContent(stepIndex, date) {
+
+export default function HorizontalLabelPositionBelowStepper(props) {
+	const classes = useStyles();
+	const [activeStep, setActiveStep] = React.useState(0);
+	const [date, setDate] = React.useState(new Date());
+	const steps = getSteps();
+
+	const handleNext = (active, step) => {	
+		if (active === 4) {
+			props.onClose();
+			setActiveStep(1);
+		}
+		else setActiveStep((prevActiveStep) => prevActiveStep + 1);
+	};
+
+	const handleBack = () => {
+		setActiveStep((prevActiveStep) => prevActiveStep - 1);
+	};
+
+	const handleReset = () => {
+		setActiveStep(0);
+	};
 	React.useEffect(() => {
 		getCusine();
 	}, []);
-	React.useEffect(() => {
-		buildRequiredInputArr()
-	}, [, stepIndex])
+	// React.useEffect(() => {
+	// 	buildRequiredInputArr()
+	// }, [, stepIndex])
 	const getCusine = async () => {
 		axios
 			.get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
@@ -62,7 +83,7 @@ function getStepContent(stepIndex, date) {
 	/////////////////////////  states ////////////////////////////////////
 
 
-	const classes = useStyles();
+
 	const [category, setCategory] = React.useState([]);
 	const [tempCategory, setTempCategory] = React.useState([]);
 	const [menuArr, setMenuArr] = React.useState([
@@ -278,44 +299,44 @@ function getStepContent(stepIndex, date) {
 		setMenuArr(menuArr);
 		isResets(!resets);
 	};
-	const update = () => {
-		return true
-	}
+	// const update = () => {
+	// 	return true
+	// }
 
-	// ASAD BHATTIS METHOD
-	const [requiredInput, setRequiredInput] = useState([])
-	const [missingInput, setMissingInput] = useState(false)
+	// // ASAD BHATTIS METHOD
+	// const [requiredInput, setRequiredInput] = useState([])
+	// const [missingInput, setMissingInput] = useState(false)
 
-	const requiredDayOfWeek = true
+	// const requiredDayOfWeek = true
 
-	const buildRequiredInputArr = () => {
-		const requiredInputCopy = []
-		let weekDay = []
-		let rightCusineList = []
-		expData[0].controls.forEach(el => {
-			if (Object.keys(el.props).includes('required')) {
-				(el.props.required) ? requiredInputCopy.push(el.inputName) : null
-			}
-			if (stepIndex === 2) {
-				let [dayName, type, startEnd] = el.inputName.split('-')
-				if (type === 'name') {
-					weekDay.push(dayName)
-				}
-			}
-			if (stepIndex === 3) {
-				rightCusineList = [...el.props.right]
-			}
-			if (stepIndex === 4) {
-				console.log('testing', el)
-			}
-		})
-		setRequiredInput(requiredInputCopy)
-	}
+	// const buildRequiredInputArr = () => {
+	// 	const requiredInputCopy = []
+	// 	let weekDay = []
+	// 	let rightCusineList = []
+	// 	expData[0].controls.forEach(el => {
+	// 		if (Object.keys(el.props).includes('required')) {
+	// 			(el.props.required) ? requiredInputCopy.push(el.inputName) : null
+	// 		}
+	// 		if (stepIndex === 2) {
+	// 			let [dayName, type, startEnd] = el.inputName.split('-')
+	// 			if (type === 'name') {
+	// 				weekDay.push(dayName)
+	// 			}
+	// 		}
+	// 		if (stepIndex === 3) {
+	// 			rightCusineList = [...el.props.right]
+	// 		}
+	// 		if (stepIndex === 4) {
+	// 			console.log('testing', el)
+	// 		}
+	// 	})
+	// 	setRequiredInput(requiredInputCopy)
+	// }
 
 
 
 	let expData = [
-		(stepIndex === 0 && {
+		(activeStep === 0 && {
 			heading: 'Rows',
 			controls: [
 				{
@@ -426,7 +447,7 @@ function getStepContent(stepIndex, date) {
 				}
 			]
 		}) ||
-		(stepIndex === 1 && {
+		(activeStep === 1 && {
 			heading: 'Truck Rows',
 			controls: [
 				{
@@ -519,10 +540,11 @@ function getStepContent(stepIndex, date) {
 						id: 'row-heights12',
 						value: updateUser.truckWebsite
 					}
-				}
+				},
+				
 			]
 		}) ||
-		(stepIndex === 2 && {
+		(activeStep === 2 && {
 			heading: 'Business Hour',
 			controls: [
 				{
@@ -963,7 +985,7 @@ function getStepContent(stepIndex, date) {
 				}
 			]
 		}) ||
-		(stepIndex === 3 && {
+		(activeStep === 3 && {
 			heading: 'Serving Cusines',
 			controls: [
 				{
@@ -983,7 +1005,7 @@ function getStepContent(stepIndex, date) {
 				}
 			]
 		}) ||
-		(stepIndex === 4 && {
+		(activeStep === 4 && {
 			heading: 'Menu',
 			controls: [
 				{
@@ -1133,81 +1155,6 @@ function getStepContent(stepIndex, date) {
 			]
 		})
 	];
-	// switch (stepIndex) {
-	// 	case 0:
-	// 		return 'Select campaign settings...';
-	// 	case 1:
-	// 		return 'What is an ad group anyways?';
-	// 	case 2:
-	// 		return 'This is the bit I really care about!';
-	// 	default:
-	// 		return 'Unknown stepIndex';
-	// }
-
-	return (
-		<React.Fragment>
-			{expData.map((pane, paneIndex) => {
-				if (pane !== undefined) {
-					return (
-						<Grid container spacing={3} style={{ paddingTop: '25px' }}>
-							{pane.controls.map((control, index) => {
-								if (control !== undefined && control.showNothing !== true) {
-									return (
-										<React.Fragment key={index}>
-											{control.label && (
-												<Grid item xs={control.xsLabel} style={{ paddingTop: '28px' }}>
-													<Label style={{ fontSize: '15px', fontWeight: 'bolder' }}>
-														{control.label}
-													</Label>
-												</Grid>
-											)}
-											<Grid
-												item
-												xs={control.xsSize}
-												style={{
-													justifyContent: control.justifyComponent,
-													paddingTop: control.paddingTop,
-													alignSelf: control.alignItem
-												}}
-											>
-												<control.component {...control.props} />
-											</Grid>
-										</React.Fragment>
-									);
-								}
-							})}
-						</Grid>
-					);
-				}
-			})}
-		</React.Fragment>
-	);
-}
-
-export default function HorizontalLabelPositionBelowStepper(props) {
-	const classes = useStyles();
-	const [activeStep, setActiveStep] = React.useState(0);
-	const [date, setDate] = React.useState(new Date());
-	const steps = getSteps();
-
-	const handleNext = (active, step) => {
-		console.log(active);
-		console.log(step);
-		if (active === 4) {
-
-			props.onClose();
-			setActiveStep(1);
-		}
-		else setActiveStep((prevActiveStep) => prevActiveStep + 1);
-	};
-
-	const handleBack = () => {
-		setActiveStep((prevActiveStep) => prevActiveStep - 1);
-	};
-
-	const handleReset = () => {
-		setActiveStep(0);
-	};
 
 	return (
 		<div className={classes.root}>
@@ -1226,7 +1173,47 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 					</div>
 				) : (
 					<div>
-						<Typography className={classes.instructions}>{getStepContent(activeStep, date)}</Typography>
+						<Typography className={classes.instructions}>
+							<React.Fragment>
+								{expData.map((pane, paneIndex) => {
+									if (pane !== undefined) {
+										return (
+											<Grid container spacing={3} style={{ paddingTop: '25px' }}>
+												{pane.controls.map((control, index) => {
+													if (control !== undefined && control.showNothing !== true) {
+														return (
+															<React.Fragment key={index}>
+																{control.label && (
+																	<Grid item xs={control.xsLabel} style={{ paddingTop: '28px' }}>
+																		<Label style={{ fontSize: '15px', fontWeight: 'bolder' }}>
+																			{control.label}
+																		</Label>
+																	</Grid>
+																)}
+																<Grid
+																	item
+																	xs={control.xsSize}
+																	style={{
+																		justifyContent: control.justifyComponent,
+																		paddingTop: control.paddingTop,
+																		alignSelf: control.alignItem
+																	}}
+																>
+																	<control.component {...control.props} />
+																</Grid>
+															</React.Fragment>
+														);
+													}
+												})}
+											</Grid>
+										);
+									}
+								})}
+								<Label style={{ fontSize: '15px', fontWeight: 'bolder',color:'red' }}>
+										Please fill the Required Field (*).
+								</Label>
+							</React.Fragment>
+						</Typography>
 						<div>
 							<Button disabled={activeStep === 0} onClick={handleBack} className={classes.backButton}>
 								Back
