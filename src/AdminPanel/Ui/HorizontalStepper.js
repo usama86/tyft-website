@@ -33,14 +33,21 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 	const [date, setDate] = React.useState(new Date());
 	const steps = getSteps();
 
-	const handleNext = (active) => {	
-		if(active===0)
-		{
-			if(updateUser.profileName==='' )
-			{
-				
+	const handleNext = (active) => {
+		console.log('active', active)
+		if (active === 0 || active === 1) {
+			checkRequiredStateForRows()
+			console.log(missingField, 'missingField')
+			if (checkRequiredStateForRows()) {
+				return
 			}
+			console.log(activeStep, 'active step')
 		}
+
+		if (active === 1) {
+
+		}
+
 		//baqi checks
 		if (active === 4) {
 			props.onClose();
@@ -59,9 +66,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 	React.useEffect(() => {
 		getCusine();
 	}, []);
-	// React.useEffect(() => {
-	// 	buildRequiredInputArr()
-	// }, [, stepIndex])
+
 	const getCusine = async () => {
 		axios
 			.get('https://tyft-backend.herokuapp.com/api/servingcusine/getcusines')
@@ -193,6 +198,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		let tempObj = { ...updateUser };
 		tempObj[val] = e.target.value;
 		SetUpdateUser(tempObj);
+		(missingField) ? setMissingField(false) : null;
 		// isReset(!reset);
 	};
 
@@ -258,23 +264,6 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 			console.log(error);
 		})
 	}
-	// axios
-	// 	.post(
-	// 		url + '/api/users/signup',
-	// 		data,
-	// 	)
-	// 	.then(async Response => {
-	// 		let Code = Response.data.code;
-	// 		console.log('Response is here')
-	// 		if (Code === 'ABT0000') {
-	// 			//succesfykk
-	// 		} else {
-	// 			//fail
-	// 		}
-	// 	})
-	// 	.catch(error => {
-	// 		console.log(error);
-	// 	});
 
 	const handleChange = (e, val) => {
 		let copyArr = week;
@@ -307,41 +296,33 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		setMenuArr(menuArr);
 		isResets(!resets);
 	};
-	// const update = () => {
-	// 	return true
+
+	const [missingField, setMissingField] = useState(false)
+
+	// conditional error message handling
+	let styles = {
+		fontSize: '15px',
+		fontWeight: 'bolder',
+		color: 'red'
+	}
+
+	const checkRequiredStateForRows = () => {
+		let getExpData = [...expData]
+		let missingFieldsArr = []
+		getExpData[0].controls.forEach((el) => {
+			if (el.props.required && el.props.value == '') {
+				missingFieldsArr.push(el.label)
+			}
+		});
+		if (missingFieldsArr.length > 0) {
+			setMissingField(true)
+			return true
+		}
+	}
+
+	// const showError = () => {
+	// 	return missingField
 	// }
-
-	// // ASAD BHATTIS METHOD
-	// const [requiredInput, setRequiredInput] = useState([])
-	// const [missingInput, setMissingInput] = useState(false)
-
-	// const requiredDayOfWeek = true
-
-	// const buildRequiredInputArr = () => {
-	// 	const requiredInputCopy = []
-	// 	let weekDay = []
-	// 	let rightCusineList = []
-	// 	expData[0].controls.forEach(el => {
-	// 		if (Object.keys(el.props).includes('required')) {
-	// 			(el.props.required) ? requiredInputCopy.push(el.inputName) : null
-	// 		}
-	// 		if (stepIndex === 2) {
-	// 			let [dayName, type, startEnd] = el.inputName.split('-')
-	// 			if (type === 'name') {
-	// 				weekDay.push(dayName)
-	// 			}
-	// 		}
-	// 		if (stepIndex === 3) {
-	// 			rightCusineList = [...el.props.right]
-	// 		}
-	// 		if (stepIndex === 4) {
-	// 			console.log('testing', el)
-	// 		}
-	// 	})
-	// 	setRequiredInput(requiredInputCopy)
-	// }
-
-
 
 	let expData = [
 		(activeStep === 0 && {
@@ -549,7 +530,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 						value: updateUser.truckWebsite
 					}
 				},
-				
+
 			]
 		}) ||
 		(activeStep === 2 && {
@@ -1164,6 +1145,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		})
 	];
 
+
 	return (
 		<div className={classes.root}>
 			<Stepper activeStep={activeStep} alternativeLabel>
@@ -1217,9 +1199,9 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 										);
 									}
 								})}
-								<Label style={{ fontSize: '15px', fontWeight: 'bolder',color:'red' }}>
-										Please fill the Required Field (*).
-								</Label>
+								{missingField && (<Label style={styles}>
+									Please fill the Required Field (*).
+								</Label>)}
 							</React.Fragment>
 						</Typography>
 						<div>
