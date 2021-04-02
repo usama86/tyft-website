@@ -287,6 +287,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		(missingField) ? setMissingField(false) : null;
 	};
 	const getServingCusine = (data) => {
+		(missingField) ? setMissingField(false) : null
 		setCusines(data);
 	};
 	const handleChangeTime = (e, timeType, Day, index) => {
@@ -1119,7 +1120,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 						required: true,
 						id: 'row-heights13',
 						value: 'e',
-						onChange: (e) => (missingField) ? setMissingField(false) : null
+						// onChange: (e) => (missingField) ? setMissingField(false) : null
 					}
 				}
 			]
