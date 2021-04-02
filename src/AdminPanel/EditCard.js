@@ -1,5 +1,6 @@
 import React from 'react'
 import Button from '@material-ui/core/Button';
+import { ImCross } from "react-icons/im";
 
 const EditCard = (props) => {
     const stylesForCard = {
@@ -12,19 +13,22 @@ const EditCard = (props) => {
         height: '50vh',
         border: '1px solid #a8a8a8',
         padding: '1rem',
-        display: 'flex',
+        display: (props.show) ? 'flex' : 'none',
         boxShadow: '0px 3px 11px -1px rgba(0,0,0,0.75)',
         borderRadius: '5px',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        transition: 'all 0.3s'
     }
 
     const btnStyle = {
         padding: '10px',
         marginTop: '10px',
         display: 'inline',
-        background: 'grey',
+        background: 'white',
         width: '100px',
-        marginRight: '10px'
+        marginRight: '10px',
+        border: '1px solid #666666',
+        color: '#000000'
     }
 
     const btnContainerStyles = {
@@ -34,13 +38,26 @@ const EditCard = (props) => {
         width: '15rem',
         justifyContent: 'space-evenly',
     }
+
+
+
     return (
         <div style={stylesForCard}>
-            <h1 style={{
-                textAlign: 'center',
-                fontWeight: '400',
-                letterSpacing: '3px',
-            }}>Edit Cusine</h1>
+            <span style={
+                {
+                    position: 'absolute',
+                    top: '10',
+                    right: '16',
+                    color: '6b6b6b'
+                }
+            }
+                onClick={props.closeCardHandler}><ImCross size={10} /></span>
+            <h1 style={
+                {
+                    textAlign: 'center',
+                    fontWeight: '400',
+                    letterSpacing: '3px',
+                }}>Edit Cusine</h1>
             <div style={
                 {
                     display: 'flex',
@@ -49,16 +66,22 @@ const EditCard = (props) => {
                     alignItems: 'center'
                 }
             }>
-                <label for="editName" style={{
-                    marginBottom: '15px',
-                    fontSize: '16px'
-                }} >Enter a new name</label>
-                <input type="text" id="editName" style={{
-                    padding: '15px',
-                    fontFamily: 'roboto'
-                }} />
+                <label for="editName" style={
+                    {
+                        marginBottom: '15px',
+                        fontSize: '16px'
+                    }} >Enter a new name</label>
+                <input type="text" id="editName" style={
+                    {
+                        padding: '10px',
+                        fontFamily: 'roboto',
+                        fontSize: '16px'
+                    }}
+                    value={props.selectedState}
+                    onChange={props.changeHandler}
+                />
                 <div style={btnContainerStyles}>
-                    <Button variant="contained" color="primary" disableElevation style={btnStyle}>
+                    <Button variant="contained" color="secondary" disableElevation style={btnStyle}>
                         Save
                     </Button>
                     <Button variant="contained" color="primary" disableElevation style={btnStyle}>
@@ -69,7 +92,7 @@ const EditCard = (props) => {
                 {/* <BiEdit size={16} /> */}
                 {/* <BiTrash size={16} color={'red'} /> */}
             </div>
-        </div>
+        </div >
     )
 }
 

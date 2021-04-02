@@ -1,6 +1,4 @@
-
-
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -22,9 +20,36 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-
-
 const ServingCusine = (props) => {
+    const [selectedCusineName, setSelectedCusineName] = useState('')
+    const itemClickHandler = (name) => {
+        setSelectedCusineName(name)
+        // prevents rerender
+        if (!showCard) {
+            setShowCard(true)
+        }
+    }
+
+    const toggleCardHandler = () => {
+        setShowCard(false)
+    }
+
+    const changeValueHandler = (e) => {
+        e.preventDefault;
+        // updating the state by changing
+        setSelectedCusineName(e.target.value)
+    }
+
+    const [showCard, setShowCard] = useState(false)
+    const showHandler = () => {
+        if (showCard) {
+            console.log('true')
+            return true
+        } else {
+            console.log('false')
+            return false
+        }
+    }
     const classes = useStyles();
     let { cusines } = props;
     return (
@@ -37,16 +62,20 @@ const ServingCusine = (props) => {
             <List component="nav" className={classes.root} aria-label="contacts">
                 {cusines ? (
                     cusines.map((data) => (
-
-                        <ListItem button>
+                        <ListItem button onClick={() => itemClickHandler(data.cusineName)} >
                             {/* kkkk */}
                             <ListItemText inset primary={data.cusineName} />
                         </ListItem>
-
                     ))
                 ) : null}
             </List>
-            <EditCard />
+            <EditCard
+                show={showHandler()}
+                closeCardHandler={toggleCardHandler}
+                selectedState={selectedCusineName}
+                changeHandler={changeValueHandler}
+            />
+
         </React.Fragment >
     );
 };
