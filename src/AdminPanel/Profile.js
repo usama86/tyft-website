@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-function Profile({ userData,...props }) {
+function Profile({ userData, ...props }) {
 	const classes = useStyles();
 	const [ updateUser, SetUpdateUser ] = React.useState({
 		email: null,
@@ -61,8 +61,8 @@ function Profile({ userData,...props }) {
 	const [ open, setOpen ] = React.useState(false);
 	const [ openMenu, setOpenMenu ] = React.useState(false);
 	const [ openCusine, setOpenCusine ] = React.useState(false);
-	const [openHour, setOpenHour] = React.useState(false);
-	
+	const [ openHour, setOpenHour ] = React.useState(false);
+
 	const [ popupData, setPopupData ] = React.useState([]);
 	const [ tableColumn, setTableColumn ] = React.useState([
 		{ title: 'Name', field: 'name' },
@@ -174,7 +174,9 @@ function Profile({ userData,...props }) {
 		}
 	};
 	const deleteUser = () => {
-		let type = '';
+		var answer = window.confirm('Delete User?');
+		if (answer) {
+				let type = '';
 		if (updateUser.userType === 'Customer' || updateUser.userType === 'Supplier') type = 'User';
 		else type = 'Truck';
 		let data = {
@@ -194,6 +196,10 @@ function Profile({ userData,...props }) {
 			.catch((error) => {
 				console.log(error);
 			});
+		} else {
+			//some code
+		}
+	
 	};
 	const getMenu = () => {
 		let sendID = {
@@ -575,22 +581,38 @@ function Profile({ userData,...props }) {
 						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={updateVal}>
 							Reset
 						</Button>
-						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={()=>setOpenCusine(true)} >
-							Serving Cusine
-						</Button>
-						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={()=>setOpenMenu(true)}>
-							Menu
-						</Button>
-						<Button variant="outlined" style={{ marginLeft: '10px' }} onClick={()=>setOpenHour(true)} >
-							Schedule
-						</Button>
+						{!userData.userType ? (
+							<React.Fragment>
+								<Button
+									variant="outlined"
+									style={{ marginLeft: '10px' }}
+									onClick={() => setOpenCusine(true)}
+								>
+									Serving Cusine
+								</Button>
+								<Button
+									variant="outlined"
+									style={{ marginLeft: '10px' }}
+									onClick={() => setOpenMenu(true)}
+								>
+									Menu
+								</Button>
+								<Button
+									variant="outlined"
+									style={{ marginLeft: '10px' }}
+									onClick={() => setOpenHour(true)}
+								>
+									Schedule
+								</Button>
+							</React.Fragment>
+						) : null}
 						{/* <Button variant="outlined" style={{ marginLeft: '10px' }}>
 							Categories
 						</Button> */}
 					</div>
 				</React.Fragment>
 			)}
-			<Popup open={open} onClose = {()=>setOpen(false)}>
+			<Popup open={open} onClose={() => setOpen(false)}>
 				<MaterialTable
 					title={'Menu Data'}
 					style={{ marginTop: '4vh', color: 'black' }}
@@ -612,16 +634,15 @@ function Profile({ userData,...props }) {
 					}}
 				/>
 			</Popup>
-			<Popup open={openMenu} onClose = {()=>setOpenMenu(false)}>
-				<MenuFunction menuID={userData.MenuID}/>
+			<Popup open={openMenu} onClose={() => setOpenMenu(false)}>
+				<MenuFunction menuID={userData.MenuID} />
 			</Popup>
-			<Popup open={openCusine} onClose = {()=>setOpenCusine(false)}>
-				<Cusine TruckID={userData._id}/>
+			<Popup open={openCusine} onClose={() => setOpenCusine(false)}>
+				<Cusine TruckID={userData._id} />
 			</Popup>
-			<Popup open={openHour} onClose = {()=>setOpenHour(false)}>
-				<BusinessHour TruckID={userData._id}/>
+			<Popup open={openHour} onClose={() => setOpenHour(false)}>
+				<BusinessHour TruckID={userData._id} />
 			</Popup>
-			
 		</React.Fragment>
 	);
 }
