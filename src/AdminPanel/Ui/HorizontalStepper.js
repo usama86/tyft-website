@@ -36,20 +36,32 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 	const handleNext = (active) => {
 		console.log('active', active)
 		if (active === 0 || active === 1) {
-			checkRequiredStateForRows()
-			console.log(missingField, 'missingField')
-			if (checkRequiredStateForRows()) {
+			let validRowState = checkRequiredStateForRows()
+			if (validRowState) {
 				return
 			}
-			console.log(activeStep, 'active step')
 		}
 
-		if (active === 1) {
+		if (active === 2) {
+			let validWeekState = checkRequiredStateForWeekDay()
+			if (validWeekState) {
+				return
+			}
+		}
 
+		if (active === 3) {
+			let validCusineState = checkRequiredStateForCusineList()
+			if (validCusineState) {
+				return
+			}
 		}
 
 		//baqi checks
 		if (active === 4) {
+			let inValidCategState = checkRequiredStateForCateg()
+			if (inValidCategState) {
+				return
+			}
 			props.onClose();
 			setActiveStep(1);
 		}
@@ -272,6 +284,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		console.log(copyArr);
 		setWeek(copyArr);
 		isResets(!resets);
+		(missingField) ? setMissingField(false) : null;
 	};
 	const getServingCusine = (data) => {
 		setCusines(data);
@@ -290,6 +303,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		copyArr[index].day = Day;
 		setWeek(copyArr);
 		isResets(!resets);
+		(missingField) ? setMissingField(false) : null;
 	};
 	const onChangeMenu = (e, name) => {
 		menuArr[indexes][name] = e.target.value;
@@ -320,9 +334,124 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		}
 	}
 
-	// const showError = () => {
-	// 	return missingField
-	// }
+	const checkRequiredStateForWeekDay = () => {
+		// copying data
+		let getExpData = [...expData]
+		let weekDayCopy = [...week]
+		// init arr
+		let checkedDays = []
+
+		let checkedDaysStatusArr = []
+		// send scheduled days names to initialized arr
+		weekDayCopy.forEach(el => {
+			if (el.working) {
+				checkedDays.push(el.day)
+			}
+		})
+
+		// if no scheduled days, set state of missing to true
+		let statusOfSchedule = checkedDays.length > 0
+		if (!statusOfSchedule) {
+			setMissingField(true)
+			return true
+		}
+
+		// convert 12 system to 24
+		const convertToTwentyFourHours = (inputTime) => {
+			let processingTimeArr = inputTime.split(' ')
+			let [hours, minutes, ...timePeriod] = [...processingTimeArr[0].split(':'), processingTimeArr[1]]
+			if (timePeriod == 'AM') {
+				return [+hours, +minutes]
+			}
+			if (timePeriod == 'PM') {
+				let updateHours = +hours + 12
+				return [updateHours, +minutes]
+			}
+		}
+
+		// if the day is scheduled, time must be valid
+		checkedDays.forEach(el => {
+			console.log('init loop')
+			// create local scoped status
+			let checkedDayStatus = {
+				dayName: null,
+				isTimeValid: true
+			}
+			// select opening and closing for scheduled day
+			let weekDayFindScheduled = weekDayCopy.find(obj => (obj.day == el))
+			let openingTime = convertToTwentyFourHours(weekDayFindScheduled.opening)
+			let closingTime = convertToTwentyFourHours(weekDayFindScheduled.closing)
+
+			// check time validity
+			const isTimeValidFunc = (firstTime, secondTime) => {
+				console.log(firstTime)
+				if (firstTime[0] != secondTime[0]) {
+					return (firstTime[0] < secondTime[0])
+				}
+
+				if (firstTime[0] == secondTime[0]) {
+					return (firstTime[1] < secondTime[1])
+				}
+			}
+
+			// push each days time validity status into the days status array
+			checkedDayStatus.dayName = el
+			checkedDayStatus.isTimeValid = isTimeValidFunc(openingTime, closingTime)
+			checkedDaysStatusArr.push(checkedDayStatus)
+			console.log('exit loop')
+		})
+		// is time entry invalid?
+		let isTimeInvalid = checkedDaysStatusArr.find(el => {
+			return (el.isTimeValid == false)
+		})
+		if ((isTimeInvalid)) {
+			setMissingField(true)
+			return true
+		}
+	}
+
+	const checkRequiredStateForCusineList = () => {
+		let getExpData = [...expData]
+		if (getExpData[0].controls[0].props.right.length == 0) {
+			setMissingField(true)
+			return true
+		}
+	}
+
+	const checkRequiredStateForCategList = () => {
+		let getExpData = [...expData]
+		let requiredFieldsForArr = []
+		let requiredFieldInputLength = []
+		getExpData[0].controls.forEach(el => {
+			// (el.props.required) ? console.log('yes', el) : console.log('no', el)
+			if (el.props.required) {
+				if (!(el.label == undefined)) {
+					requiredFieldsForArr.push(el.label)
+				}
+			}
+		})
+		console.log(requiredFieldsForArr)
+		requiredFieldsForArr.forEach(el => {
+			let isRequiredFieldEmpty = false
+			let selectedControl = getExpData[0].controls.find(m => (m.label == el))
+			requiredFieldInputLength.push(selectedControl.props.value.length)
+		})
+		console.log(requiredFieldInputLength)
+		if (requiredFieldInputLength.includes(0)) {
+			return true
+
+		}
+		else return false
+	}
+
+	const checkRequiredStateForCateg = () => {
+		let getExpData = [...expData]
+		console.log('hi there sexy', menuArr)
+		if (menuArr.length == 0) {
+			setMissingField(true)
+			return true
+		}
+	}
 
 	let expData = [
 		(activeStep === 0 && {
@@ -545,7 +674,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 							<Checkbox
 								icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
 								checkedIcon={<CheckBoxIcon fontSize="small" />}
-								name="checkedI" sssss
+								name="checkedI"
 								checked={week[0].working}
 								onChange={() => handleChange('Monday', 0)}
 							/>
@@ -989,7 +1118,8 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 						getServingCusine: getServingCusine,
 						required: true,
 						id: 'row-heights13',
-						value: 'e'
+						value: 'e',
+						onChange: (e) => (missingField) ? setMissingField(false) : null
 					}
 				}
 			]
@@ -1006,7 +1136,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => setTempCategory(e.target.value),
-						required: true,
+						required: false,
 						id: 'row-heights14',
 						value: tempCategory
 					}
@@ -1071,7 +1201,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onChange: (e) => onChangeMenu(e, 'description'),
-						required: true,
+						required: false,
 						id: 'row-heights18',
 						value: menuArr[indexes].description
 					}
@@ -1096,20 +1226,25 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 						className: classes.inputclass,
 						data: ['Auto', 'Exact', 'Atleast'],
 						onClick: () => {
-							indexes += 1;
-							console.log(menuArr);
-							let copycat = [
-								...menuArr,
-								{
-									category: category[category.length - 1],
-									name: '',
-									price: '',
-									description: ''
-								}
-							];
-							console.log(copycat);
-							setMenuArr(copycat);
-							isResets(!resets);
+							let invalidInputField = checkRequiredStateForCategList()
+							if (!invalidInputField) {
+								indexes += 1;
+								console.log(menuArr);
+								let copycat = [
+									...menuArr,
+									{
+										category: category[category.length - 1],
+										name: '',
+										price: '',
+										description: ''
+									}
+
+								];
+								console.log(copycat);
+								setMenuArr(copycat);
+								isResets(!resets);
+							}
+							else setMissingField(true)
 						},
 						style: { background: 'grey' },
 						// onChange: (e) => onChangeUserData(e, 'email'),
@@ -1145,6 +1280,19 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 		})
 	];
 
+	let errorMessage = 'Please fill the Required Field (*).'
+
+	if (activeStep == 2) {
+		errorMessage = 'Please select a schedule'
+	}
+
+	if (activeStep == 3) {
+		errorMessage = 'Please select atleast one cusine'
+	}
+
+	if (activeStep == 4) {
+		errorMessage = 'blyat'
+	}
 
 	return (
 		<div className={classes.root}>
@@ -1177,6 +1325,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 																	<Grid item xs={control.xsLabel} style={{ paddingTop: '28px' }}>
 																		<Label style={{ fontSize: '15px', fontWeight: 'bolder' }}>
 																			{control.label}
+																			{(control.props.required) ? (<span style={{ color: 'red' }}>*</span>) : null}
 																		</Label>
 																	</Grid>
 																)}
@@ -1200,7 +1349,7 @@ export default function HorizontalLabelPositionBelowStepper(props) {
 									}
 								})}
 								{missingField && (<Label style={styles}>
-									Please fill the Required Field (*).
+									{errorMessage}
 								</Label>)}
 							</React.Fragment>
 						</Typography>
