@@ -13,7 +13,7 @@ const EditCard = (props) => {
         height: '50vh',
         border: '1px solid #a8a8a8',
         padding: '1rem',
-        display: (props.show) ? 'flex' : 'none',
+        display: 'flex',
         boxShadow: '0px 3px 11px -1px rgba(0,0,0,0.75)',
         borderRadius: '5px',
         flexDirection: 'column',
@@ -42,13 +42,18 @@ const EditCard = (props) => {
 
 
     return (
+        <React.Fragment>
+        {props.show && ( 
+        
         <div style={stylesForCard}>
             <span style={
                 {
                     position: 'absolute',
                     top: '10',
-                    right: '16',
-                    color: '6b6b6b'
+                    // right: '16',
+                    right:'16px',
+                    color: '6b6b6b',
+                    // cursor:'pointer'
                 }
             }
                 onClick={props.closeCardHandler}><ImCross size={10} /></span>
@@ -93,6 +98,8 @@ const EditCard = (props) => {
                 {/* <BiTrash size={16} color={'red'} /> */}
             </div>
         </div >
+        )}
+        </React.Fragment>
     )
 }
 

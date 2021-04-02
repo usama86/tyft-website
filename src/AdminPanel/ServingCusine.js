@@ -41,15 +41,7 @@ const ServingCusine = (props) => {
     }
 
     const [showCard, setShowCard] = useState(false)
-    const showHandler = () => {
-        if (showCard) {
-            console.log('true')
-            return true
-        } else {
-            console.log('false')
-            return false
-        }
-    }
+   
     const classes = useStyles();
     let { cusines } = props;
     return (
@@ -70,7 +62,7 @@ const ServingCusine = (props) => {
                 ) : null}
             </List>
             <EditCard
-                show={showHandler()}
+                show={showCard}
                 closeCardHandler={toggleCardHandler}
                 selectedState={selectedCusineName}
                 changeHandler={changeValueHandler}
