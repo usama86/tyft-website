@@ -75,7 +75,7 @@ const EditCard = (props) => {
                     {
                         marginBottom: '15px',
                         fontSize: '16px'
-                    }} >Enter a new name</label>
+                    }} >Edit the name</label>
                 <input type="text" id="editName" style={
                     {
                         padding: '10px',
@@ -86,10 +86,10 @@ const EditCard = (props) => {
                     onChange={props.changeHandler}
                 />
                 <div style={btnContainerStyles}>
-                    <Button variant="contained" color="secondary" disableElevation style={btnStyle}>
-                        Save
+                    <Button variant="contained" color="secondary" onClick={props.onUpdatePress} disableElevation style={btnStyle}>
+                        Update
                     </Button>
-                    <Button variant="contained" color="primary" disableElevation style={btnStyle}>
+                    <Button variant="contained" color="primary" onClick={props.closeCardHandler} disableElevation style={btnStyle}>
                         Cancel
                     </Button>
                 </div>
@@ -103,4 +103,4 @@ const EditCard = (props) => {
     )
 }
 
-export default EditCard
+export default EditCard;

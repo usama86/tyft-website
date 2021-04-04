@@ -4,9 +4,8 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Label from './Ui/Label';
-import { BiEdit, BiTrash } from 'react-icons/bi';
 import EditCard from './EditCard'
-
+import axios from 'axios';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -19,11 +18,12 @@ const useStyles = makeStyles((theme) => ({
         overflowX: 'hidden'
     }
 }));
-
+let index =0;
 const ServingCusine = (props) => {
     const [selectedCusineName, setSelectedCusineName] = useState('')
-    const itemClickHandler = (name) => {
+    const itemClickHandler = (name,ind) => {
         setSelectedCusineName(name)
+		index=ind;
         // prevents rerender
         if (!showCard) {
             setShowCard(true)
@@ -40,6 +40,39 @@ const ServingCusine = (props) => {
         setSelectedCusineName(e.target.value)
     }
 
+	const onUpdatePress = () => {
+		let copy = [...cusines];
+		copy[index].cusineName =  selectedCusineName;
+		console.log(copy);
+		let data = {
+			_id:"5ec17c2a3a68ae4a28e0c980",
+			cusine: copy
+		};
+		axios
+			.post('https://tyft-backend.herokuapp.com' + '/api/servingcusine/updatecusines', data)
+			.then(async (Response) => {
+				let responseMessage = await Response.data.code;
+				if(responseMessage==='ABT0000')
+				{
+					alert('Updated Succesfully');
+					toggleCardHandler();
+				}
+				else
+					alert('Unable to update Serving Cusine, Please try again later.')
+			})
+			.catch((error) => {
+				console.log(error);
+				setLoader(false);
+			});
+		
+		
+		
+		
+		
+		;
+		
+	}
+
     const [showCard, setShowCard] = useState(false)
    
     const classes = useStyles();
@@ -53,8 +86,8 @@ const ServingCusine = (props) => {
             }}>Serving Cusines</Label>
             <List component="nav" className={classes.root} aria-label="contacts">
                 {cusines ? (
-                    cusines.map((data) => (
-                        <ListItem button onClick={() => itemClickHandler(data.cusineName)} >
+                    cusines.map((data,indexes) => (
+                        <ListItem button onClick={() => itemClickHandler(data.cusineName,indexes)} >
                             {/* kkkk */}
                             <ListItemText inset primary={data.cusineName} />
                         </ListItem>
@@ -66,6 +99,7 @@ const ServingCusine = (props) => {
                 closeCardHandler={toggleCardHandler}
                 selectedState={selectedCusineName}
                 changeHandler={changeValueHandler}
+				onUpdatePress={onUpdatePress}
             />
 
         </React.Fragment >
