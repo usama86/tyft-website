@@ -4,6 +4,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import Menu from './../Ui/MenuPopup';
 import { withRouter } from 'next/router'
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
           <Typography variant="h6" className={classes.title}>
             TYFT Admin Panel
           </Typography>
+          <Menu/>
           <Button onClick={()=>props.router.push('/login')} color="inherit">Logout</Button>
         </Toolbar>
       </AppBar>
